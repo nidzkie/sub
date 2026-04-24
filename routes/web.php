@@ -1,16 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\HomeController;
 use App\Livewire\AddNewItem;
+use App\Livewire\HomePage;
 use App\Livewire\MyListings;
 use App\Livewire\MyRentals;
 use App\Livewire\ViewItem;
 use App\Livewire\EditItem;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/', HomePage::class)->name('home');
+Route::get('/categories/{category:slug}', HomePage::class)->name('categories.show');
 
 Route::middleware([
     'auth:sanctum',

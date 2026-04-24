@@ -1,5 +1,5 @@
-<div class="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 md:py-12">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="bg-gradient-to-b from-gray-50 to-white py-8 md:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">My Rentals</h1>
@@ -24,84 +24,226 @@
                 </div>
             </div>
         @else
-            <!-- Rentals Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                @foreach($rentals as $rental)
-                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden">
-                        <!-- Item Image -->
-                        <div class="relative h-48 bg-gray-200 overflow-hidden">
-                            @if($rental->item->image_path)
-                                <img class="w-full h-full object-cover" src="{{ asset('storage/' . $rental->item->image_path) }}" alt="{{ $rental->item->name }}">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <svg class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <!-- Filter Buttons -->
+            <div class="mb-6 flex flex-wrap gap-3">
+                <button 
+                    wire:click="setFilter('all')"
+                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
+                    {{ $filterStatus === 'all' 
+                        ? 'bg-blue-600 text-white shadow-md' 
+                        : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-600' }}">
+                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    All Rentals
+                </button>
+
+                <button 
+                    wire:click="setFilter('pending')"
+                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
+                    {{ $filterStatus === 'pending' 
+                        ? 'bg-yellow-600 text-white shadow-md' 
+                        : 'bg-white text-gray-700 border border-gray-300 hover:border-yellow-400 hover:text-yellow-600' }}">
+                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Pending
+                </button>
+
+                <button 
+                    wire:click="setFilter('due_soon')"
+                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
+                    {{ $filterStatus === 'due_soon' 
+                        ? 'bg-red-600 text-white shadow-md' 
+                        : 'bg-white text-gray-700 border border-gray-300 hover:border-red-400 hover:text-red-600' }}">
+                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M7.08 6.06A9 9 0 1 0 20.94 18.94M7.08 6.06a9 9 0 0 1 13.86 12.88"></path>
+                    </svg>
+                    Due Soon
+                </button>
+
+                <button 
+                    wire:click="setFilter('ongoing')"
+                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
+                    {{ $filterStatus === 'ongoing' 
+                        ? 'bg-green-600 text-white shadow-md' 
+                        : 'bg-white text-gray-700 border border-gray-300 hover:border-green-400 hover:text-green-600' }}">
+                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Ongoing
+                </button>
+            </div>
+
+            <!-- Table Container -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-100 border-b border-gray-200">
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Item</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Owner</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Rental Period</th>
+                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Days Left</th>
+                                <th class="px-6 py-4 text-right text-sm font-semibold text-gray-700">Total Price</th>
+                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($rentals as $rental)
+                                @php
+                                    $daysLeft = now()->diffInDays($rental->end_date, false);
+                                    $isDueSoon = $rental->status === 'active' && $daysLeft >= 0 && $daysLeft <= 7;
+                                    $isOverdue = $daysLeft < 0;
+                                    $rowClass = $isDueSoon ? 'bg-red-50 hover:bg-red-100' : ($isOverdue ? 'bg-orange-50 hover:bg-orange-100' : 'hover:bg-gray-50');
+                                @endphp
+                                <tr class="{{ $rowClass }} border-b border-gray-200 transition-colors duration-200">
+                                    <!-- Item Name -->
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            @if($rental->item->image_path)
+                                                <img class="w-12 h-12 rounded-lg object-cover" src="{{ asset('storage/' . $rental->item->image_path) }}" alt="{{ $rental->item->name }}">
+                                            @else
+                                                <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
+                                                    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                            @endif
-                            
-                            <!-- Status Badge -->
-                            <div class="absolute top-3 right-3">
-                                <span class="px-3 py-1 text-xs font-semibold rounded-full 
-                                    @if($rental->status === 'active')
-                                        bg-green-100 text-green-800
-                                    @elseif($rental->status === 'completed')
-                                        bg-blue-100 text-blue-800
-                                    @else
-                                        bg-gray-100 text-gray-800
-                                    @endif">
-                                    {{ ucfirst($rental->status) }}
-                                </span>
-                            </div>
-                        </div>
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-900">{{ $rental->item->name }}</p>
+                                                <p class="text-xs text-gray-500">{{ $rental->item->category->name ?? 'No category' }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
 
-                        <!-- Details -->
-                        <div class="p-5">
-                            <!-- Item Name -->
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $rental->item->name }}</h3>
+                                    <!-- Owner -->
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                                <span class="text-xs font-semibold text-blue-600">
+                                                    @php
+                                                        $initials = collect(explode(' ', trim($rental->item->user->name)))->filter()->take(2)->map(fn ($part) => strtoupper(substr($part, 0, 1)))->implode('');
+                                                    @endphp
+                                                    {{ $initials }}
+                                                </span>
+                                            </div>
+                                            <p class="text-sm font-medium text-gray-900">{{ $rental->item->user->name }}</p>
+                                        </div>
+                                    </td>
 
-                            <!-- Owner -->
-                            <div class="flex items-center gap-2 mb-4 pb-4 border-b border-gray-200">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                                    <span class="text-xs font-semibold text-blue-600">
-                                        @php
-                                            $initials = collect(explode(' ', trim($rental->item->user->name)))->filter()->take(2)->map(fn ($part) => strtoupper(substr($part, 0, 1)))->implode('');
-                                        @endphp
-                                        {{ $initials }}
-                                    </span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900">{{ $rental->item->user->name }}</p>
-                                    <p class="text-xs text-gray-500">Owner</p>
-                                </div>
-                            </div>
+                                    <!-- Rental Period -->
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm">
+                                            <p class="text-gray-900">{{ $rental->start_date->format('M d') }} → {{ $rental->end_date->format('M d, Y') }}</p>
+                                            <p class="text-xs text-gray-500">{{ $rental->start_date->format('Y') }}</p>
+                                        </div>
+                                    </td>
 
-                            <!-- Rental Period -->
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div class="bg-gray-50 rounded-lg p-3">
-                                    <p class="text-xs font-medium text-gray-600 mb-1">From</p>
-                                    <p class="text-sm font-semibold text-gray-900">{{ $rental->start_date->format('M d, Y') }}</p>
-                                </div>
-                                <div class="bg-gray-50 rounded-lg p-3">
-                                    <p class="text-xs font-medium text-gray-600 mb-1">To</p>
-                                    <p class="text-sm font-semibold text-gray-900">{{ $rental->end_date->format('M d, Y') }}</p>
-                                </div>
-                            </div>
+                                    <!-- Days Left -->
+                                    <td class="px-6 py-4">
+                                        <div class="text-center">
+                                            @if($rental->status === 'completed')
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                    Completed
+                                                </span>
+                                            @elseif($rental->status === 'pending')
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    Pending
+                                                </span>
+                                            @else
+                                                @if($isOverdue)
+                                                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                                        </svg>
+                                                        Overdue
+                                                    </div>
+                                                @elseif($isDueSoon)
+                                                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold animate-pulse bg-red-100 text-red-800">
+                                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path>
+                                                        </svg>
+                                                        {{ $daysLeft }} days
+                                                    </div>
+                                                @else
+                                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                                                        {{ $daysLeft }} days
+                                                    </span>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </td>
 
-                            <!-- Total Price -->
-                            <div class="bg-blue-50 rounded-lg p-4">
-                                <p class="text-xs font-medium text-gray-600 mb-1">Total Price</p>
-                                <p class="text-2xl font-bold text-blue-600">₱{{ number_format($rental->total_price, 2) }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+                                    <!-- Total Price -->
+                                    <td class="px-6 py-4 text-right">
+                                        <p class="text-sm font-bold text-gray-900">₱{{ number_format($rental->total_price, 2) }}</p>
+                                    </td>
+
+                                    <!-- Status -->
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="px-3 py-1 text-xs font-semibold rounded-full 
+                                            @if($rental->status === 'active')
+                                                bg-green-100 text-green-800
+                                            @elseif($rental->status === 'completed')
+                                                bg-blue-100 text-blue-800
+                                            @else
+                                                bg-gray-100 text-gray-800
+                                            @endif">
+                                            {{ ucfirst($rental->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Pagination -->
             @if($rentals->hasPages())
                 <div class="mt-8">
                     {{ $rentals->links() }}
+                </div>
+            @endif
+
+            <!-- Alert Messages -->
+            @php
+                $dueSoonCount = $rentals->filter(fn($r) => $r->status === 'active' && now()->diffInDays($r->end_date, false) >= 0 && now()->diffInDays($r->end_date, false) <= 7)->count();
+                $overdueCount = $rentals->filter(fn($r) => $r->status === 'active' && now()->diffInDays($r->end_date, false) < 0)->count();
+            @endphp
+
+            @if($dueSoonCount > 0)
+                <div class="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <h4 class="font-semibold text-red-800">{{ $dueSoonCount }} rental(s) due soon!</h4>
+                            <p class="text-sm text-red-700 mt-1">You have rental(s) that will be due within the next 7 days. Please plan for their return.</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if($overdueCount > 0)
+                <div class="mt-6 p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-orange-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <h4 class="font-semibold text-orange-800">{{ $overdueCount }} rental(s) are overdue!</h4>
+                            <p class="text-sm text-orange-700 mt-1">Please return these items as soon as possible.</p>
+                        </div>
+                    </div>
                 </div>
             @endif
         @endif
