@@ -6,6 +6,57 @@
             <p class="text-gray-600">Track the items you've rented</p>
         </div>
 
+        <!-- Filter Buttons -->
+        <div class="mb-6 flex flex-wrap gap-3">
+            <button
+                wire:click="setFilter('all')"
+                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
+                {{ $filterStatus === 'all'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-600' }}">
+                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                All Rentals
+            </button>
+
+            <button
+                wire:click="setFilter('pending')"
+                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
+                {{ $filterStatus === 'pending'
+                    ? 'bg-yellow-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-yellow-400 hover:text-yellow-600' }}">
+                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Pending
+            </button>
+
+            <button
+                wire:click="setFilter('due_soon')"
+                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
+                {{ $filterStatus === 'due_soon'
+                    ? 'bg-red-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-red-400 hover:text-red-600' }}">
+                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M7.08 6.06A9 9 0 1 0 20.94 18.94M7.08 6.06a9 9 0 0 1 13.86 12.88"></path>
+                </svg>
+                Due Soon
+            </button>
+
+            <button
+                wire:click="setFilter('ongoing')"
+                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
+                {{ $filterStatus === 'ongoing'
+                    ? 'bg-green-600 text-white shadow-md'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-green-400 hover:text-green-600' }}">
+                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Ongoing
+            </button>
+        </div>
+
         @if($rentals->isEmpty())
             <!-- Empty State -->
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden p-12">
@@ -13,68 +64,28 @@
                     <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h3 class="mt-4 text-xl font-semibold text-gray-900">No rentals yet</h3>
-                    <p class="mt-2 text-gray-600 mb-8">Start browsing items available for rent.</p>
-                    <a href="{{ route('home') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        Browse Items
-                    </a>
+                    @if($filterStatus === 'all')
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">No rentals yet</h3>
+                        <p class="mt-2 text-gray-600 mb-8">Start browsing items available for rent.</p>
+                        <a href="{{ route('home') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            Browse Items
+                        </a>
+                    @else
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900">No rentals for this filter</h3>
+                        <p class="mt-2 text-gray-600 mb-8">Try another filter or go back to all rentals.</p>
+                        <button wire:click="setFilter('all')" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                            Back to All Rentals
+                        </button>
+                    @endif
                 </div>
             </div>
         @else
-            <!-- Filter Buttons -->
-            <div class="mb-6 flex flex-wrap gap-3">
-                <button 
-                    wire:click="setFilter('all')"
-                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
-                    {{ $filterStatus === 'all' 
-                        ? 'bg-blue-600 text-white shadow-md' 
-                        : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-600' }}">
-                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    All Rentals
-                </button>
-
-                <button 
-                    wire:click="setFilter('pending')"
-                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
-                    {{ $filterStatus === 'pending' 
-                        ? 'bg-yellow-600 text-white shadow-md' 
-                        : 'bg-white text-gray-700 border border-gray-300 hover:border-yellow-400 hover:text-yellow-600' }}">
-                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Pending
-                </button>
-
-                <button 
-                    wire:click="setFilter('due_soon')"
-                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
-                    {{ $filterStatus === 'due_soon' 
-                        ? 'bg-red-600 text-white shadow-md' 
-                        : 'bg-white text-gray-700 border border-gray-300 hover:border-red-400 hover:text-red-600' }}">
-                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M7.08 6.06A9 9 0 1 0 20.94 18.94M7.08 6.06a9 9 0 0 1 13.86 12.88"></path>
-                    </svg>
-                    Due Soon
-                </button>
-
-                <button 
-                    wire:click="setFilter('ongoing')"
-                    class="px-4 py-2 rounded-lg font-semibold transition-all duration-200 
-                    {{ $filterStatus === 'ongoing' 
-                        ? 'bg-green-600 text-white shadow-md' 
-                        : 'bg-white text-gray-700 border border-gray-300 hover:border-green-400 hover:text-green-600' }}">
-                    <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    Ongoing
-                </button>
-            </div>
-
             <!-- Table Container -->
             <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
                 <div class="overflow-x-auto">
@@ -112,7 +123,7 @@
                                             @endif
                                             <div>
                                                 <p class="text-sm font-semibold text-gray-900">{{ $rental->item->name }}</p>
-                                                <p class="text-xs text-gray-500">{{ $rental->item->category->name ?? 'No category' }}</p>
+                                                <p class="text-xs text-gray-500">{{ $rental->item->categoryRecord?->name ?? 'No category' }}</p>
                                             </div>
                                         </div>
                                     </td>

@@ -18,11 +18,16 @@ return new class extends Migration
         if (Schema::hasColumn('items', 'category')) {
             DB::table('items')->select('id', 'category')->orderBy('id')->chunkById(100, function ($items) use ($categories) {
                 foreach ($items as $item) {
-                    $slug = $item->category ?: 'books';
+                    $legacySlug = $item->category ?: 'books';
+                    $normalizedSlug = match ($legacySlug) {
+                        'electronics', 'gadgets', 'electronics-and-gadgets' => 'electronics-gadgets',
+                        'accessories', 'school-supplies' => 'school-supplies-accessories',
+                        default => $legacySlug,
+                    };
 
                     DB::table('items')
                         ->where('id', $item->id)
-                        ->update(['category_id' => $categories[$slug] ?? $categories['books'] ?? null]);
+                        ->update(['category_id' => $categories[$normalizedSlug] ?? $categories['books'] ?? null]);
                 }
             });
         }

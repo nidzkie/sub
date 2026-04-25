@@ -4,17 +4,25 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Item;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\Layout;
-use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.app')]
 class AddNewItem extends Component
 {
     use WithFileUploads;
 
-    public $name, $description, $price, $category_id, $image;
+    public $name;
+
+    public $description;
+
+    public $price;
+
+    public $category_id;
+
+    public $image;
 
     protected $rules = [
         'name' => 'required|string|min:3',
@@ -40,7 +48,6 @@ class AddNewItem extends Component
 
         $category = Category::query()
             ->where('is_active', true)
-            ->where('slug', '!=', 'school-supplies')
             ->findOrFail($this->category_id);
         $imagePath = $this->image ? $this->image->store('item-photos', 'public') : null;
 
@@ -64,7 +71,6 @@ class AddNewItem extends Component
         return view('livewire.add-new-item', [
             'categories' => Category::query()
                 ->where('is_active', true)
-                ->where('slug', '!=', 'school-supplies')
                 ->orderBy('name')
                 ->get(),
         ]);

@@ -28,17 +28,17 @@
 
                 <!-- Current Profile Photo -->
                 <div class="mt-2" x-show="! photoPreview">
-                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="rounded-full size-20 object-cover">
+                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="h-32 w-32 rounded-2xl object-cover ring-2 ring-blue-100 shadow-xl shadow-blue-600/20 dark:ring-blue-900">
                 </div>
 
                 <!-- New Profile Photo Preview -->
                 <div class="mt-2" x-show="photoPreview" style="display: none;">
-                    <span class="block rounded-full size-20 bg-cover bg-no-repeat bg-center"
+                    <span class="block h-32 w-32 rounded-2xl bg-cover bg-no-repeat bg-center ring-2 ring-blue-100 shadow-xl shadow-blue-600/20 dark:ring-blue-900"
                           x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
                     </span>
                 </div>
 
-                <x-secondary-button class="mt-2 me-2" type="button" x-on:click.prevent="$refs.photo.click()">
+                <x-secondary-button class="me-2 mt-3" type="button" x-on:click.prevent="$refs.photo.click()">
                     {{ __('Select A New Photo') }}
                 </x-secondary-button>
 

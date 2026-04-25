@@ -19,7 +19,6 @@ class HomePage extends Component
     {
         $categories = Category::query()
             ->where('is_active', true)
-            ->where('slug', '!=', 'school-supplies')
             ->orderBy('name')
             ->get();
 
@@ -42,4 +41,3 @@ class HomePage extends Component
         ])->layout('layouts.guest');
     }
 }
-

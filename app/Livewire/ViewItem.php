@@ -4,12 +4,12 @@ namespace App\Livewire;
 
 use App\Models\Item;
 use App\Notifications\RentalRequestedNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\Layout;
 
 #[Layout('layouts.app')]
 class ViewItem extends Component
@@ -17,10 +17,23 @@ class ViewItem extends Component
     use WithFileUploads;
 
     public $item;
+
     public $isEditing = false;
-    public $name, $description, $price, $status, $image;
+
+    public $name;
+
+    public $description;
+
+    public $price;
+
+    public $status;
+
+    public $image;
+
     public $startDate = '';
+
     public $endDate = '';
+
     public $additionalNotes = '';
 
     protected $rules = [
@@ -96,11 +109,13 @@ class ViewItem extends Component
 
         if ($this->item->user_id === Auth::id()) {
             session()->flash('message', 'You cannot request your own item.');
+
             return;
         }
 
         if ($this->item->status !== 'available') {
             session()->flash('message', 'This item is currently unavailable.');
+
             return;
         }
 
@@ -117,11 +132,12 @@ class ViewItem extends Component
 
         if ($existingRequest) {
             session()->flash('message', 'You already have an active or pending request for this item.');
+
             return;
         }
 
-        $start = \Carbon\Carbon::parse($validated['startDate']);
-        $end = \Carbon\Carbon::parse($validated['endDate']);
+        $start = Carbon::parse($validated['startDate']);
+        $end = Carbon::parse($validated['endDate']);
         $days = max(1, $start->diffInDays($end));
         $totalPrice = $days * (float) $this->item->price;
 
@@ -130,6 +146,7 @@ class ViewItem extends Component
             'start_date' => $start,
             'end_date' => $end,
             'total_price' => $totalPrice,
+            'payment_status' => 'outstanding',
             'status' => 'pending',
         ]);
 

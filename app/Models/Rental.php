@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rental extends Model
 {
-    protected $fillable = ['item_id', 'renter_id', 'start_date', 'end_date', 'total_price', 'status'];
+    protected $fillable = ['item_id', 'renter_id', 'start_date', 'end_date', 'total_price', 'payment_status', 'status'];
 
     protected function casts(): array
     {
@@ -17,10 +17,13 @@ class Rental extends Model
         ];
     }
 
-    public function item() {
+    public function item()
+    {
         return $this->belongsTo(Item::class);
     }
-    public function renter() {
+
+    public function renter()
+    {
         return $this->belongsTo(User::class, 'renter_id');
     }
 }

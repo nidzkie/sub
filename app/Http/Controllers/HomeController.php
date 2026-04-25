@@ -11,7 +11,6 @@ class HomeController extends Controller
     {
         $categories = Category::query()
             ->where('is_active', true)
-            ->where('slug', '!=', 'school-supplies')
             ->orderBy('name')
             ->get();
 

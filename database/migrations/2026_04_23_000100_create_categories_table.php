@@ -20,11 +20,11 @@ return new class extends Migration
 
         DB::table('categories')->insert([
             ['name' => 'Books', 'slug' => 'books', 'icon' => 'book', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Gadgets', 'slug' => 'gadgets', 'icon' => 'device', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Electronics', 'slug' => 'electronics', 'icon' => 'speaker', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Electronics & Gadgets', 'slug' => 'electronics-gadgets', 'icon' => 'device', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Tools', 'slug' => 'tools', 'icon' => 'tool', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Sports & PE Essentials', 'slug' => 'sports-pe', 'icon' => 'fitness', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Accessories', 'slug' => 'accessories', 'icon' => 'spark', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'School Supplies & Accessories', 'slug' => 'school-supplies-accessories', 'icon' => 'pencil', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Clothing', 'slug' => 'clothing', 'icon' => 'shirt', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 
