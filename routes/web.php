@@ -8,7 +8,16 @@ use App\Livewire\MyRentals;
 use App\Livewire\ViewItem;
 use App\Livewire\EditItem;
 
-Route::get('/', HomePage::class)->name('home');
+// Landing page for guests
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+    return view('landing');
+})->name('landing');
+
+// Home page (accessible to both auth and guests)
+Route::get('/dashboard', HomePage::class)->name('home');
 Route::get('/categories/{category:slug}', HomePage::class)->name('categories.show');
 
 Route::middleware([

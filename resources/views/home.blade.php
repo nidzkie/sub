@@ -1,12 +1,232 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" :class="{ 'dark': darkMode }" @load="$watch('darkMode', (val) => document.documentElement.classList.toggle('dark', val))">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Campus Rental</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script>
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
 </head>
-<body class="bg-[#f5f7fb] font-sans text-slate-900 antialiased">
+<body class="bg-white dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 antialiased transition-colors">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav x-data="{ open: false }" class="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 sticky top-0 z-50 transition-colors">
+            <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center gap-6">
+                    <a href="{{ route('home') }}" class="flex items-center gap-2 group">
+                        <span class="inline-flex h-6 w-6 items-center justify-center rounded bg-gradient-primary text-xs font-bold text-white group-hover:shadow-lg group-hover:shadow-primary-500/50 transition-all duration-300">CR</span>
+                        <span class="text-sm font-semibold text-slate-900 dark:text-slate-50 sm:text-base">Campus Rental</span>
+                    </a>
+                </div>
+
+                <div class="hidden items-center gap-3 sm:flex">
+                    @auth
+                        <div class="flex items-center gap-2 rounded-full bg-slate-50 dark:bg-slate-800 px-2 py-1 ring-1 ring-slate-200 dark:ring-slate-700">
+                            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'bg-gradient-primary text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} rounded-full px-4 py-2 text-sm font-semibold transition">Home</a>
+                            <a href="{{ route('my-rentals') }}" class="{{ request()->routeIs('my-rentals') ? 'bg-gradient-primary text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} rounded-full px-4 py-2 text-sm font-semibold transition">My Rentals</a>
+                            <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') ? 'bg-gradient-primary text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} rounded-full px-4 py-2 text-sm font-semibold transition">My Listings</a>
+                        </div>
+                        <x-dark-mode-toggle />
+                        <a href="{{ route('profile.show') }}" class="inline-flex group">
+                            <x-profile-avatar :user="Auth::user()" />
+                        </a>
+                    @else
+                        <x-dark-mode-toggle />
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100">Sign In</a>
+                        <a href="{{ route('register') }}" class="rounded-lg bg-gradient-primary px-4 py-2 text-sm font-semibold text-white hover:shadow-lg hover:shadow-primary-500/50 transition-all">Sign Up</a>
+                    @endauth
+                </div>
+
+                <div class="flex items-center gap-2 sm:hidden">
+                    <x-dark-mode-toggle />
+                    <button @click="open = !open" class="inline-flex items-center justify-center rounded-md p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200">
+                        <svg class="h-5 w-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div x-show="open" x-cloak class="border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 sm:hidden">
+                <div class="space-y-2 text-sm">
+                    @auth
+                        <div class="space-y-2 rounded-2xl bg-slate-50 dark:bg-slate-800 p-2 ring-1 ring-slate-200 dark:ring-slate-700">
+                            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'bg-gradient-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} block rounded-xl px-4 py-3 font-semibold transition">Home</a>
+                            <a href="{{ route('my-rentals') }}" class="{{ request()->routeIs('my-rentals') ? 'bg-gradient-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} block rounded-xl px-4 py-3 font-semibold transition">My Rentals</a>
+                            <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') ? 'bg-gradient-primary text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} block rounded-xl px-4 py-3 font-semibold transition">My Listings</a>
+                        </div>
+                        <a href="{{ route('profile.show') }}" class="flex items-center gap-3 px-1 pt-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition">
+                            <x-profile-avatar :user="Auth::user()" size="md" />
+                            <span class="font-medium">Profile</span>
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="block text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 py-2 font-medium">Sign In</a>
+                        <a href="{{ route('register') }}" class="block font-semibold bg-gradient-primary text-white rounded-lg px-4 py-2 text-center">Sign Up</a>
+                    @endauth
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section with Gradient -->
+        <section class="relative overflow-hidden bg-gradient-primary dark:bg-gradient-to-br dark:from-primary-900 dark:to-accent-900 text-white">
+            <!-- Gradient overlay patterns -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-accent-500/20 blur-3xl"></div>
+                <div class="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary-500/20 blur-3xl"></div>
+            </div>
+
+            <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+                <div class="mx-auto max-w-4xl text-center">
+                    <h1 class="text-5xl sm:text-7xl font-black tracking-tighter leading-tight">
+                        <span class="block">Share Resources,</span>
+                        <span class="block bg-gradient-to-r from-white to-blue-100 dark:to-accent-200 bg-clip-text text-transparent">Save Money</span>
+                    </h1>
+                    <p class="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-blue-100 dark:text-accent-200">Rent and lend items within the University of Mindanao campus community. Connect, share, and save together.</p>
+
+                    <!-- Enhanced Search Bar with Gradient Button -->
+                    <form class="mx-auto mt-12 flex max-w-2xl items-center gap-3 rounded-2xl bg-white/95 dark:bg-slate-900/95 p-2 shadow-2xl backdrop-blur-xl ring-1 ring-white/20 dark:ring-slate-700/50">
+                        <div class="flex min-w-0 flex-1 items-center gap-3 px-4">
+                            <svg class="h-5 w-5 shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0Z" />
+                            </svg>
+                            <input
+                                type="text"
+                                placeholder="Search for electronics, books, gadgets..."
+                                class="w-full min-w-0 border-0 bg-transparent text-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-0"
+                            >
+                        </div>
+                        <button
+                            type="button"
+                            class="shrink-0 h-12 rounded-xl bg-gradient-primary px-8 text-lg font-semibold text-white hover:shadow-lg hover:shadow-primary-500/50 transition-all duration-300 hover:-translate-y-0.5"
+                        >
+                            Search
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+            <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+                <h2 class="mb-6 text-2xl font-bold text-slate-900 dark:text-slate-50">Browse Categories</h2>
+                <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-2 rounded-2xl bg-slate-50 dark:bg-slate-800 p-3 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700">
+                    <a
+                        href="{{ route('home') }}"
+                        class="{{ $selectedCategory === null ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-50 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600' : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition"
+                    >
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                        </svg>
+                        <span>All</span>
+                    </a>
+
+                    @foreach ($categories as $category)
+                        <a
+                            href="{{ route('categories.show', $category) }}"
+                            class="{{ optional($selectedCategory)->is($category) ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-50 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600' : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition"
+                        >
+                            @if ($category->icon === 'book')
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 17A2.5 2.5 0 0 0 4 19.5m2.5-2.5V5A2 2 0 0 1 8.5 3H20v14M6.5 17H20" />
+                                </svg>
+                            @elseif ($category->icon === 'device')
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2Z" />
+                                </svg>
+                            @elseif ($category->icon === 'pencil')
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 5 4 4M4 20l4.5-1 9-9a2.121 2.121 0 0 0-3-3l-9 9L4 20Z" />
+                                </svg>
+                            @else
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l.7 2.154a1 1 0 0 0 .95.69h2.264c.969 0 1.371 1.24.588 1.81l-1.832 1.331a1 1 0 0 0-.364 1.118l.7 2.154c.3.921-.755 1.688-1.539 1.118l-1.832-1.331a1 1 0 0 0-1.176 0l-1.832 1.331c-.783.57-1.838-.197-1.539-1.118l.7-2.154a1 1 0 0 0-.364-1.118L5.547 7.58c-.783-.57-.38-1.81.588-1.81H8.4a1 1 0 0 0 .95-.69l.7-2.154Z" />
+                                </svg>
+                            @endif
+                            <span>{{ $category->name }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- Items Grid -->
+        <main class="bg-white dark:bg-slate-950 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="mb-8 flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50">All Available Items</h2>
+                    <p class="mt-1 text-slate-500 dark:text-slate-400">Explore rentals shared by your campus community.</p>
+                </div>
+                <span class="rounded-full bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-slate-700">
+                    {{ $featuredItems->count() }} items
+                </span>
+            </div>
+
+            @if ($featuredItems->isEmpty())
+                <div class="rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-6 py-20 text-center">
+                    <svg class="mx-auto h-16 w-16 text-slate-300 dark:text-slate-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">No items available yet</h3>
+                    <p class="mt-2 text-slate-500 dark:text-slate-400">Be the first to list something useful for other students.</p>
+                </div>
+            @else
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                    @foreach ($featuredItems as $item)
+                        <article class="group overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm dark:shadow-slate-900/50 transition hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-slate-900/70">
+                            <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                @if ($item->image_path)
+                                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="h-full w-full object-cover group-hover:scale-110 transition duration-300">
+                                @else
+                                    <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
+                                        <svg class="h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                            </div>
+
+                            <div class="space-y-3 p-4">
+                                <div>
+                                    <h3 class="line-clamp-1 text-sm font-bold text-slate-900 dark:text-slate-50">{{ $item->name }}</h3>
+                                    <p class="mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">{{ $item->description ?: 'No description provided.' }}</p>
+                                </div>
+
+                                <div class="flex items-end justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
+                                    <div>
+                                        <div class="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">₱{{ number_format($item->price, 2) }}</div>
+                                        <div class="text-[11px] text-slate-400 dark:text-slate-500">per day</div>
+                                    </div>
+                                    <div class="text-right text-[11px] text-slate-400 dark:text-slate-500">
+                                        <div>{{ $item->categoryRecord?->name ?? ucfirst(str_replace('-', ' ', $item->category ?? 'Other')) }}</div>
+                                        <div class="font-medium">{{ ucfirst($item->status) }}</div>
+                                    </div>
+                                </div>
+
+                                @auth
+                                    <a href="{{ route('item.view', $item->id) }}" class="block rounded-lg bg-gradient-primary hover:shadow-lg hover:shadow-primary-500/50 px-3 py-2.5 text-center text-xs font-semibold text-white transition-all duration-300 hover:-translate-y-0.5">
+                                        View Details
+                                    </a>
+                                @else
+                                    <a href="{{ route('login') }}" class="block rounded-lg bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2.5 text-center text-xs font-semibold text-white transition-all">
+                                        Sign In
+                                    </a>
+                                @endauth
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @endif
+        </main>
+    </div>
+</body>
+</html>
     <div class="min-h-screen">
         <nav x-data="{ open: false }" class="border-b border-slate-200 bg-white">
             <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
