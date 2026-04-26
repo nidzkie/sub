@@ -8,50 +8,22 @@
 </p>
 
 ## About Campus Rental
-The Campus Item Rental Management System is a web-based platform designed to facilitate peer-to-peer rental transactions among university students. The system allows students to list items they are willing to rent out and enables other students to browse, request, and borrow these items through a structured process.
+Campus Rental System is a Laravel-based peer-to-peer item rental platform for university students. It enables students to list items they own and rent items from other students within their campus community.
 
+Core Features
+The system is organized into three main modules:
 
-## Project Development Process and Workload Assignment
-
-
-1. Authentication & Profile Module - Handles user-related screens (foundation of system):
-
-     Landing Page
-     Sign In
-     Sign Up
-     My Profile (Manage your Profile)
-     Responsibilities
-     Authentication (login/register/logout)
-     User profile management
-     Session handling
-     Base layout (navbar, footer)
-
-
-2. Item Management Module (Owner Side) - Handles item listing and inventory (core system feature):
-
-     My Listings (Items I've lent out)
-     Add New Item
-     Edit Item Info
-     View Item Info (Owner POV)
-     Manage Inventory
-     Responsibilities
-     Item CRUD (Create, Read, Update, Delete)
-     Item categories
-     Image upload
-     Availability status
-
-
-3. Rental & Browsing Module (Renter Side) - Handles browsing and rental workflow (logic-heavy):
-
-     Home Page
-     Item Info (Renter POV)
-     My Rentals (Items I've Rented)
-     Responsibilities
-     Browse items
-     Search/filter items
-     Request rental
-     Rental status tracking
-     Rental history
+Authentication & Profile Module — User registration, login, profile management, and session handling; includes landing page and navbar/footer layout
+Item Management (Owner Side) — Owners can list, edit, and manage their items; includes image uploads, categories, and availability tracking
+Rental & Browsing (Renter Side) — Students can browse/search items, request rentals, and track rental history and status
+Tech Stack
+Backend: Laravel 13 with Livewire 3 for reactive components
+Frontend: Blade templates (61.1% of codebase), Tailwind CSS v3, Vite bundler
+Database: Full ORM with migrations support
+Testing: PHPUnit 12 with feature and unit tests
+Tooling: Laravel Boost v2 (AI agent support), Pint (code style), Pail (logs)
+Project Status
+Newly created (7 days old), actively maintained, follows standard Laravel conventions with support for AI-assisted development through Laravel Boost.
  
 
 ## About Laravel
