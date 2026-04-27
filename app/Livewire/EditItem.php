@@ -4,11 +4,11 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Item;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Layout;
 
 #[Layout('layouts.app')]
 class EditItem extends Component
@@ -17,7 +17,19 @@ class EditItem extends Component
 
     public Item $item;
 
-    public $name, $description, $price, $category_id, $image, $status;
+    public $name;
+
+    public $description;
+
+    public $price;
+
+    public $condition;
+
+    public $category_id;
+
+    public $image;
+
+    public $status;
 
     public function mount(Item $item)
     {
@@ -30,6 +42,7 @@ class EditItem extends Component
         $this->name = $item->name;
         $this->description = $item->description;
         $this->price = $item->price;
+        $this->condition = $item->condition;
         $this->category_id = $item->category_id;
         $this->status = $item->status;
     }
@@ -40,6 +53,7 @@ class EditItem extends Component
             'name' => 'required|string|min:3',
             'description' => 'required',
             'price' => 'required|numeric|min:0',
+            'condition' => 'required|in:Like New,Good,Fair,Old',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|string',
             'image' => 'nullable|image|max:2048',
@@ -56,6 +70,7 @@ class EditItem extends Component
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,
+            'condition' => $this->condition,
             'category_id' => $this->category_id,
             'status' => $this->status,
         ];

@@ -20,6 +20,8 @@ class AddNewItem extends Component
 
     public $price;
 
+    public string $condition = 'Good';
+
     public $category_id;
 
     public $image;
@@ -28,6 +30,7 @@ class AddNewItem extends Component
         'name' => 'required|string|min:3',
         'description' => 'required',
         'price' => 'required|numeric|min:0',
+        'condition' => 'required|in:Like New,Good,Fair,Old',
         'category_id' => 'required|exists:categories,id',
         'image' => 'nullable|image|max:1024',
     ];
@@ -56,6 +59,7 @@ class AddNewItem extends Component
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,
+            'condition' => $this->condition,
             'category' => $category->slug,
             'category_id' => $category->id,
             'image_path' => $imagePath,

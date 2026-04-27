@@ -2,8 +2,7 @@
     <div class="grid gap-6 xl:grid-cols-[18rem_minmax(0,1fr)]">
         <aside class="xl:sticky xl:top-24 xl:h-fit">
             <div class="rounded-2xl border border-slate-200/70 bg-white/80 p-5 shadow-lg shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/75">
-                <h2 class="mb-5 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Marketplace Filters</h2>
-
+                
                 <div class="mb-4">
                     <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Search</label>
                     <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
@@ -16,6 +15,16 @@
                             placeholder="Search items..."
                             class="w-full border-0 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0 dark:text-slate-100"
                         >
+                        @if ($search !== '')
+                            <button
+                                type="button"
+                                wire:click="clearSearch"
+                                class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-slate-500 transition hover:bg-slate-200 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100"
+                                aria-label="Clear search"
+                            >
+                                &times;
+                            </button>
+                        @endif
                     </div>
                 </div>
 
@@ -61,7 +70,7 @@
 
                 <button
                     wire:click="resetFilters"
-                    class="w-full rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+                    class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all hover:brightness-110 hover:shadow-lg hover:shadow-blue-500/30 active:scale-[0.98]"
                 >
                     Reset Filters
                 </button>
@@ -70,12 +79,9 @@
 
         <div>
             <div class="mb-8 flex items-center justify-between">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50">Featured Picks</h2>
-                    <p class="mt-1 text-slate-500 dark:text-slate-400">A curated snapshot of items available right now.</p>
-                </div>
+                
                 <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
-                    {{ $items->count() }} items
+                    {{ $items->count() }} Items Available
                 </span>
             </div>
 

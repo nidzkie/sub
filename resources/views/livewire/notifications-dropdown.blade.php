@@ -33,8 +33,8 @@
         <div class="max-h-96 overflow-y-auto">
             @forelse($notifications as $notification)
                 <a
-                    href="{{ $notification->data['url'] ?? '#' }}"
-                    wire:click="markAsRead('{{ $notification->id }}')"
+                    href="{{ $notification->data['url'] ?? (isset($notification->data['rental_id']) ? route('rental-requests.show', $notification->data['rental_id']) : '#') }}"
+                    wire:click.prevent="openNotification('{{ $notification->id }}')"
                     class="block border-b border-slate-100 px-4 py-3 transition hover:bg-slate-50 {{ is_null($notification->read_at) ? 'bg-blue-50/50' : '' }}"
                 >
                     <p class="text-sm font-semibold text-slate-800">

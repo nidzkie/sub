@@ -50,7 +50,7 @@ class RentalRequestedNotification extends Notification
             'end_date' => $this->endDate,
             'total_price' => $this->totalPrice,
             'additional_notes' => $this->additionalNotes,
-            'url' => route('item.view', $this->itemId),
+            'url' => route('rental-requests.show', $this->rentalId),
         ];
     }
 }

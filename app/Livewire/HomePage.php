@@ -15,10 +15,20 @@ class HomePage extends Component
         $this->selectedCategory = $category;
     }
 
+    public function selectCategory(int $categoryId): void
+    {
+        $this->selectedCategory = Category::query()
+            ->where('is_active', true)
+            ->find($categoryId);
+    }
+
     public function render()
     {
         $categories = Category::query()
             ->where('is_active', true)
+            ->withCount([
+                'items as available_items_count' => fn ($query) => $query->where('status', 'available'),
+            ])
             ->orderBy('name')
             ->get();
 

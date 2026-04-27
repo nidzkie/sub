@@ -1,8 +1,8 @@
 <x-guest-layout>
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-[#E8F1FF]">
-        
+
         <div class="w-full sm:max-w-md mt-6 px-10 py-10 bg-white shadow-lg overflow-hidden sm:rounded-xl border border-gray-100 text-center">
-            
+
             <div class="flex justify-center mb-4">
                 <div class="bg-blue-600 rounded-full p-3 shadow-md">
                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,7 +63,7 @@
             </form>
 
             <div class="mt-6 text-sm text-gray-600">
-                Already have an account? 
+                Already have an account?
                 <a href="{{ route('login') }}" class="text-blue-600 font-semibold hover:underline">Sign in</a>
             </div>
         </div>

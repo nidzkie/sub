@@ -5,6 +5,7 @@ use App\Livewire\EditItem;
 use App\Livewire\HomePage;
 use App\Livewire\MyListings;
 use App\Livewire\MyRentals;
+use App\Livewire\OwnerRentalRequestView;
 use App\Livewire\RentInventoryManagement;
 use App\Livewire\ViewItem;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,7 @@ Route::middleware([
 
     Route::get('/my-listings', MyListings::class)->name('my-listings');
     Route::get('/rent-inventory-management', RentInventoryManagement::class)->name('rent-inventory-management');
+    Route::get('/rental-requests/{rental}', OwnerRentalRequestView::class)->name('rental-requests.show');
     Route::get('/add-item', AddNewItem::class)->name('add-item');
     Route::get('/my-rentals', MyRentals::class)->name('my-rentals');
 

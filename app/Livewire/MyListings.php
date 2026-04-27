@@ -3,10 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Item;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Layout;
-use Illuminate\Support\Facades\Auth;
 
 #[Layout('layouts.app')]
 class MyListings extends Component
@@ -31,6 +31,7 @@ class MyListings extends Component
         abort_unless(Auth::check(), 403);
 
         $items = Item::where('user_id', Auth::id())
+            ->with('latestRental')
             ->withCount('rentals')
             ->orderBy('created_at', 'desc')
             ->paginate(10);

@@ -16,7 +16,7 @@
 
         <!-- Styles -->
         @livewireStyles
-        
+
         <script>
             // Prevent flash of unstyled content in dark mode
             if (localStorage.getItem('darkMode') === 'true') {

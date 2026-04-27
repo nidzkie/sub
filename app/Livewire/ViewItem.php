@@ -39,6 +39,7 @@ class ViewItem extends Component
     protected $rules = [
         'name' => 'required|string|min:3',
         'description' => 'required|string',
+        'condition' => 'required|string',
         'price' => 'required|numeric|min:0',
         'status' => 'required|in:available,rented,maintenance',
         'image' => 'nullable|image|max:1024',
@@ -138,7 +139,8 @@ class ViewItem extends Component
 
         $start = Carbon::parse($validated['startDate']);
         $end = Carbon::parse($validated['endDate']);
-        $days = max(1, $start->diffInDays($end));
+        $seconds = $start->diffInSeconds($end, false);
+        $days = max(1, (int) ceil($seconds / 86400));
         $totalPrice = $days * (float) $this->item->price;
 
         $rental = $this->item->rentals()->create([

@@ -1,9 +1,9 @@
-<div class="bg-gradient-to-b from-gray-50 to-white py-8 md:py-12">
+<div class="bg-gradient-to-b from-gray-50 to-white py-8 md:py-12 dark:from-slate-950 dark:to-slate-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">My Rentals</h1>
-            <p class="text-gray-600">Track the items you've rented</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2 dark:text-slate-100">My Rentals</h1>
+            <p class="text-gray-600 dark:text-slate-400">Track the items you've rented</p>
         </div>
 
         <!-- Filter Buttons -->
@@ -13,7 +13,7 @@
                 class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
                 {{ $filterStatus === 'all'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-600' }}">
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-blue-500 dark:hover:text-blue-400' }}">
                 <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
@@ -25,11 +25,11 @@
                 class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
                 {{ $filterStatus === 'pending'
                     ? 'bg-yellow-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-yellow-400 hover:text-yellow-600' }}">
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-yellow-400 hover:text-yellow-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-yellow-500 dark:hover:text-yellow-400' }}">
                 <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                Pending
+                Pending / Approved
             </button>
 
             <button
@@ -37,7 +37,7 @@
                 class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
                 {{ $filterStatus === 'due_soon'
                     ? 'bg-red-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-red-400 hover:text-red-600' }}">
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-red-400 hover:text-red-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-red-500 dark:hover:text-red-400' }}">
                 <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M7.08 6.06A9 9 0 1 0 20.94 18.94M7.08 6.06a9 9 0 0 1 13.86 12.88"></path>
                 </svg>
@@ -49,7 +49,7 @@
                 class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
                 {{ $filterStatus === 'ongoing'
                     ? 'bg-green-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-green-400 hover:text-green-600' }}">
+                    : 'bg-white text-gray-700 border border-gray-300 hover:border-green-400 hover:text-green-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-green-500 dark:hover:text-green-400' }}">
                 <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
@@ -59,7 +59,7 @@
 
         @if($rentals->isEmpty())
             <!-- Empty State -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden p-12">
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden p-12 dark:bg-slate-900 dark:shadow-slate-900/40">
                 <div class="text-center">
                     <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -87,28 +87,32 @@
             </div>
         @else
             <!-- Table Container -->
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:bg-slate-900 dark:border-slate-700 dark:shadow-slate-900/40">
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
-                            <tr class="bg-gray-100 border-b border-gray-200">
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Item</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Owner</th>
-                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Rental Period</th>
-                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Days Left</th>
-                                <th class="px-6 py-4 text-right text-sm font-semibold text-gray-700">Total Price</th>
-                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Status</th>
+                            <tr class="bg-gray-100 border-b border-gray-200 dark:bg-slate-800 dark:border-slate-700">
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-slate-300">Item</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-slate-300">Owner</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 dark:text-slate-300">Rental Period</th>
+                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 dark:text-slate-300">Days Left</th>
+                                <th class="px-6 py-4 text-right text-sm font-semibold text-gray-700 dark:text-slate-300">Total Price</th>
+                                <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 dark:text-slate-300">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($rentals as $rental)
                                 @php
-                                    $daysLeft = now()->diffInDays($rental->end_date, false);
-                                    $isDueSoon = $rental->status === 'active' && $daysLeft >= 0 && $daysLeft <= 7;
+                                    $secondsLeft = now()->diffInSeconds($rental->end_date, false);
+                                    $daysLeft = $secondsLeft >= 0
+                                        ? (int) ceil($secondsLeft / 86400)
+                                        : (int) floor($secondsLeft / 86400);
+                                    $isOnProcess = $rental->status === 'approved' || ($rental->status === 'active' && $rental->start_date->isFuture());
+                                    $isDueSoon = $rental->status === 'active' && ! $isOnProcess && $daysLeft >= 0 && $daysLeft <= 7;
                                     $isOverdue = $daysLeft < 0;
-                                    $rowClass = $isDueSoon ? 'bg-red-50 hover:bg-red-100' : ($isOverdue ? 'bg-orange-50 hover:bg-orange-100' : 'hover:bg-gray-50');
+                                    $rowClass = $isDueSoon ? 'bg-red-50 hover:bg-red-100 dark:bg-red-950/20 dark:hover:bg-red-950/40' : ($isOverdue ? 'bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/20 dark:hover:bg-orange-950/40' : 'hover:bg-gray-50 dark:hover:bg-slate-800/60');
                                 @endphp
-                                <tr class="{{ $rowClass }} border-b border-gray-200 transition-colors duration-200">
+                                <tr class="{{ $rowClass }} border-b border-gray-200 transition-colors duration-200 dark:border-slate-700">
                                     <!-- Item Name -->
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
@@ -168,6 +172,10 @@
                                                     </svg>
                                                     Pending
                                                 </span>
+                                            @elseif($isOnProcess)
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+                                                    On Process
+                                                </span>
                                             @else
                                                 @if($isOverdue)
                                                     <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">
@@ -194,20 +202,26 @@
 
                                     <!-- Total Price -->
                                     <td class="px-6 py-4 text-right">
-                                        <p class="text-sm font-bold text-gray-900">₱{{ number_format($rental->total_price, 2) }}</p>
+                                        <p class="text-sm font-bold text-gray-900 dark:text-slate-100">₱{{ number_format($rental->total_price, 2) }}</p>
                                     </td>
 
                                     <!-- Status -->
                                     <td class="px-6 py-4 text-center">
-                                        <span class="px-3 py-1 text-xs font-semibold rounded-full 
-                                            @if($rental->status === 'active')
+                                        <span class="px-3 py-1 text-xs font-semibold rounded-full
+                                            @if($isOnProcess)
+                                                bg-blue-100 text-blue-800
+                                            @elseif($rental->status === 'active')
                                                 bg-green-100 text-green-800
                                             @elseif($rental->status === 'completed')
                                                 bg-blue-100 text-blue-800
+                                            @elseif($rental->status === 'approved')
+                                                bg-blue-100 text-blue-800
+                                            @elseif($rental->status === 'pending')
+                                                bg-yellow-100 text-yellow-800
                                             @else
                                                 bg-gray-100 text-gray-800
                                             @endif">
-                                            {{ ucfirst($rental->status) }}
+                                            {{ $isOnProcess ? 'On Process' : ($rental->status === 'approved' ? 'Approved Request' : ucfirst($rental->status)) }}
                                         </span>
                                     </td>
                                 </tr>
@@ -226,12 +240,28 @@
 
             <!-- Alert Messages -->
             @php
-                $dueSoonCount = $rentals->filter(fn($r) => $r->status === 'active' && now()->diffInDays($r->end_date, false) >= 0 && now()->diffInDays($r->end_date, false) <= 7)->count();
-                $overdueCount = $rentals->filter(fn($r) => $r->status === 'active' && now()->diffInDays($r->end_date, false) < 0)->count();
+                $dueSoonCount = $rentals->filter(function ($r): bool {
+                    $secondsLeft = now()->diffInSeconds($r->end_date, false);
+                    $daysLeft = $secondsLeft >= 0
+                        ? (int) ceil($secondsLeft / 86400)
+                        : (int) floor($secondsLeft / 86400);
+                    $isOnProcess = $r->status === 'approved' || ($r->status === 'active' && $r->start_date->isFuture());
+
+                    return $r->status === 'active' && ! $isOnProcess && $daysLeft >= 0 && $daysLeft <= 7;
+                })->count();
+                $overdueCount = $rentals->filter(function ($r): bool {
+                    $secondsLeft = now()->diffInSeconds($r->end_date, false);
+                    $daysLeft = $secondsLeft >= 0
+                        ? (int) ceil($secondsLeft / 86400)
+                        : (int) floor($secondsLeft / 86400);
+                    $isOnProcess = $r->status === 'approved' || ($r->status === 'active' && $r->start_date->isFuture());
+
+                    return $r->status === 'active' && ! $isOnProcess && $daysLeft < 0;
+                })->count();
             @endphp
 
             @if($dueSoonCount > 0)
-                <div class="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+                <div class="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg dark:bg-red-900/20 dark:border-red-700">
                     <div class="flex items-start">
                         <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
@@ -245,7 +275,7 @@
             @endif
 
             @if($overdueCount > 0)
-                <div class="mt-6 p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg">
+                <div class="mt-6 p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg dark:bg-orange-900/20 dark:border-orange-700">
                     <div class="flex items-start">
                         <svg class="w-5 h-5 text-orange-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>

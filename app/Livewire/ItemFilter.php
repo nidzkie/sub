@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Item;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ItemFilter extends Component
@@ -15,6 +16,24 @@ class ItemFilter extends Component
     public string $maxPrice = '';
 
     public string $sortBy = 'latest';
+
+    public function mount(?int $selectedCategoryId = null): void
+    {
+        if ($selectedCategoryId !== null) {
+            $this->category = (string) $selectedCategoryId;
+        }
+    }
+
+    public function clearSearch(): void
+    {
+        $this->search = '';
+    }
+
+    #[On('category-selected')]
+    public function applyCategoryFilter(?int $categoryId = null): void
+    {
+        $this->category = $categoryId !== null ? (string) $categoryId : '';
+    }
 
     public function resetFilters(): void
     {
@@ -49,7 +68,8 @@ class ItemFilter extends Component
                 };
             })
             ->where('status', 'available')
-            ->get();
+            ->paginate(12);
+            
 
         return view('livewire.item-filter', [
             'items' => $items,
