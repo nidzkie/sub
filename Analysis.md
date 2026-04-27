@@ -1,5 +1,5 @@
-## Detailed Error and Performance Issue Analysis
-# Critical Issues
+# Detailed Error and Performance Issue Analysis
+## Critical Issues
     1.	Missing Database Indexes on Foreign Keys & Search Columns
         o	Problem: The items table is missing indexes on status, price, and user_id columns used in WHERE/ORDER BY clauses
         o	Impact: Slow queries when filtering items by status or price; N+1 query problems on rentals
@@ -18,7 +18,7 @@
         o	Impact: Unpredictable pagination behavior on large datasets
         o	Fix: Add index on (status, created_at) and ensure consistent ordering
 
-# Security Issues
+## Security Issues
     1.	Rating Column Precision Issue
         o	Problem: users.rating column defined as decimal(3, 2) in migration - max value is 9.99 (should be typical 5-star scale)
         o	Impact: Rating overflow potential; unclear business logic
@@ -39,7 +39,7 @@
         o	Problem: Rental model has paid_amount and payment_status fields in migration but not in fillable array or validation rules
         o	Impact: Potential mass assignment vulnerabilities or unexpected nulls
 
-# Architecture & Code Quality Issues
+## Architecture & Code Quality Issues
     1.	Redundant Category Slug Field
         o	Migrations 2026_04_22_235000 and 2026_04_23_000200 normalize categories but duplicate data exists
         o	Results in confusing code: both $item->category and $item->categoryRecord used
@@ -59,7 +59,7 @@
         o	Rental model has cascade delete on item_id - could orphan payment records
         o	Consider nullOnDelete() and handling orphaned records
 ________________________________________
-# List of Improvement Objectives
+## List of Improvement Objectives
 
     Phase 1: Critical Performance Fixes (High Priority)
         •	  Add database indexes: items(status, created_at), items(user_id), rentals(renter_id, status), rentals(item_id)
