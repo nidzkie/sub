@@ -1,18 +1,22 @@
 # Detailed Error and Performance Issue Analysis
 ## Critical Issues
+
     1.	Missing Database Indexes on Foreign Keys & Search Columns
         o	Problem: The items table is missing indexes on status, price, and user_id columns used in WHERE/ORDER BY clauses
         o	Impact: Slow queries when filtering items by status or price; N+1 query problems on rentals
         o	Evidence: Searches in ItemFilter.php and MyListings.php query these columns without indexes
         o	Fix: Add indexes in a migration
+        
     2.	N+1 Query Problem in Notifications
         o	Problem: NotificationsDropdown.php loads all notifications with limit(8) but then calls unreadNotifications()->count() separately, causing an extra query
         o	Impact: Performance degradation on high-traffic pages
         o	Fix: Use loadCount() or combine queries
+        
     3.	Duplicate Category Slug Field
         o	Problem: Items table stores both category (string) and category_id (foreign key). Migration 2026_04_22_235000 adds redundant data
         o	Impact: Data inconsistency, wasted storage, confusing schema
         o	Fix: Remove the category column entirely and use category_id exclusively
+        
     4.	Pagination Performance
         o	Problem: ItemFilter.php paginates 12 items per page with multiple joins/where clauses without explicit ordering by id
         o	Impact: Unpredictable pagination behavior on large datasets
@@ -23,42 +27,52 @@
         o	Problem: users.rating column defined as decimal(3, 2) in migration - max value is 9.99 (should be typical 5-star scale)
         o	Impact: Rating overflow potential; unclear business logic
         o	Fix: Clarify intended scale (1-5, 1-10, etc.) and adjust precision accordingly
+        
     2.	Missing File Deletion on Update
         o	Problem: EditItem.php and ViewItem.php correctly handle image deletion, but no audit logging of file operations
         o	Impact: Orphaned files accumulate; no recovery mechanism
         o	Fix: Implement soft delete tracking for uploaded files
+        
     3.	Weak Input Validation on Rental Dates
         o	Problem: ViewItem.php requestRental() doesn't validate that endDate > startDate or prevent past dates
         o	Impact: Invalid rental periods could be created
         o	Fix: Add validation rules in the component
+        
     4.	Sensitive Data in Notifications
         o	Problem: NotificationsDropdown.php stores item_id and renter_id in notification data without encryption
         o	Impact: Sensitive business data visible if notifications database is compromised
         o	Fix: Use encrypted cast in Notification model
+        
     5.	Missing Column Validation
         o	Problem: Rental model has paid_amount and payment_status fields in migration but not in fillable array or validation rules
         o	Impact: Potential mass assignment vulnerabilities or unexpected nulls
 
 ## Architecture & Code Quality Issues
+
     1.	Redundant Category Slug Field
         o	Migrations 2026_04_22_235000 and 2026_04_23_000200 normalize categories but duplicate data exists
         o	Results in confusing code: both $item->category and $item->categoryRecord used
+        
     2.	Missing Timestamps on Rentals
         o	rentals table lacks important business logic timestamps for approval/rejection tracking
         o	No approved_at, completed_at, or cancelled_at fields
+        
     3.	Incomplete Test Coverage
         o	Only 9 basic tests exist; critical business logic untested:
             	Item deletion cascading to rentals
             	Payment calculation edge cases
             	Authorization checks on item operations
             	Rental status transitions
+            
     4.	Helper Function Not in Proper Location
         o	app/Helpers/currency.php uses peso() helper but may not be auto-loaded properly
         o	Should verify PSR-4 autoloading configuration
+        
     5.	Missing Update/Delete Cascade Safety
         o	Rental model has cascade delete on item_id - could orphan payment records
         o	Consider nullOnDelete() and handling orphaned records
 ________________________________________
+
 ## List of Improvement Objectives
 
     Phase 1: Critical Performance Fixes (High Priority)
