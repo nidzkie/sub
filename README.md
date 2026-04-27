@@ -26,7 +26,9 @@ Tech Stack
 
 Project Status:
 
-Newly created (7 days old), actively maintained, follows standard Laravel conventions with support for AI-assisted development through Laravel Boost.
+    Newly created (8 days old), actively maintained, follows standard Laravel conventions with support for AI-assisted development through Laravel Boost.
+
+    (Note: This project was fork from my personal github account sir.)
  
 
 ## About Laravel
