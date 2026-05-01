@@ -45,10 +45,14 @@ class RentInventoryManagement extends Component
 
         $rental = Rental::query()
             ->whereHas('item', fn ($query) => $query->where('user_id', Auth::id()))
-            ->where('status', 'pending')
+            ->where('status', Rental::STATUS_PENDING)
             ->findOrFail($rentalId);
 
-        $rental->update(['status' => 'approved']);
+        $rental->update([
+            'status' => Rental::STATUS_APPROVED,
+            'approved_at' => now(),
+            'cancelled_at' => null,
+        ]);
         $rental->renter->notify(new RentalRequestDecisionNotification(
             rentalId: $rental->id,
             itemId: $rental->item->id,
@@ -65,10 +69,13 @@ class RentInventoryManagement extends Component
 
         $rental = Rental::query()
             ->whereHas('item', fn ($query) => $query->where('user_id', Auth::id()))
-            ->where('status', 'pending')
+            ->where('status', Rental::STATUS_PENDING)
             ->findOrFail($rentalId);
 
-        $rental->update(['status' => 'cancelled']);
+        $rental->update([
+            'status' => Rental::STATUS_CANCELLED,
+            'cancelled_at' => now(),
+        ]);
         $rental->renter->notify(new RentalRequestDecisionNotification(
             rentalId: $rental->id,
             itemId: $rental->item->id,
@@ -85,7 +92,7 @@ class RentInventoryManagement extends Component
 
         $rental = Rental::query()
             ->whereHas('item', fn ($query) => $query->where('user_id', Auth::id()))
-            ->whereIn('status', ['approved', 'active'])
+            ->whereIn('status', [Rental::STATUS_APPROVED, Rental::STATUS_ACTIVE])
             ->findOrFail($rentalId);
 
         $this->validate([
@@ -106,7 +113,7 @@ class RentInventoryManagement extends Component
 
         $rental = Rental::query()
             ->whereHas('item', fn ($query) => $query->where('user_id', Auth::id()))
-            ->whereIn('status', ['approved', 'active'])
+            ->whereIn('status', [Rental::STATUS_APPROVED, Rental::STATUS_ACTIVE])
             ->findOrFail($rentalId);
 
         if ($rental->start_date->isFuture()) {
@@ -115,7 +122,11 @@ class RentInventoryManagement extends Component
             return;
         }
 
-        $rental->update(['status' => 'active']);
+        $rental->update([
+            'status' => Rental::STATUS_ACTIVE,
+            'active_at' => now(),
+            'cancelled_at' => null,
+        ]);
         $rental->item->update(['status' => 'rented']);
 
         session()->flash('message', 'Rental status updated to Rented.');
@@ -127,7 +138,7 @@ class RentInventoryManagement extends Component
 
         $baseQuery = Rental::query()
             ->whereHas('item', fn ($query) => $query->where('user_id', Auth::id()))
-            ->whereIn('status', ['pending', 'approved', 'active'])
+            ->whereIn('status', [Rental::STATUS_PENDING, Rental::STATUS_APPROVED, Rental::STATUS_ACTIVE])
             ->with(['item.categoryRecord', 'renter']);
 
         if ($this->search !== '') {
@@ -140,20 +151,20 @@ class RentInventoryManagement extends Component
 
         $allCount = (clone $baseQuery)->count();
         $dueSoonCount = (clone $baseQuery)
-            ->where('status', 'active')
+            ->where('status', Rental::STATUS_ACTIVE)
             ->where('start_date', '<=', now())
             ->whereBetween('end_date', [now(), now()->addDays(7)])
             ->count();
         $activeCount = (clone $baseQuery)
-            ->where('status', 'active')
+            ->where('status', Rental::STATUS_ACTIVE)
             ->where('start_date', '<=', now())
             ->count();
-        $pendingCount = (clone $baseQuery)->where('status', 'pending')->count();
+        $pendingCount = (clone $baseQuery)->where('status', Rental::STATUS_PENDING)->count();
         $approvedCount = (clone $baseQuery)
             ->where(function ($query): void {
-                $query->where('status', 'approved')
+                $query->where('status', Rental::STATUS_APPROVED)
                     ->orWhere(function ($subQuery): void {
-                        $subQuery->where('status', 'active')
+                        $subQuery->where('status', Rental::STATUS_ACTIVE)
                             ->where('start_date', '>', now());
                     });
             })
@@ -162,19 +173,19 @@ class RentInventoryManagement extends Component
         $rentalsQuery = clone $baseQuery;
 
         if ($this->filterStatus === 'due_soon') {
-            $rentalsQuery->where('status', 'active')
+            $rentalsQuery->where('status', Rental::STATUS_ACTIVE)
                 ->where('start_date', '<=', now())
                 ->whereBetween('end_date', [now(), now()->addDays(7)]);
         } elseif ($this->filterStatus === 'active') {
-            $rentalsQuery->where('status', 'active')
+            $rentalsQuery->where('status', Rental::STATUS_ACTIVE)
                 ->where('start_date', '<=', now());
         } elseif ($this->filterStatus === 'pending') {
-            $rentalsQuery->where('status', 'pending');
+            $rentalsQuery->where('status', Rental::STATUS_PENDING);
         } elseif ($this->filterStatus === 'approved') {
             $rentalsQuery->where(function ($query): void {
-                $query->where('status', 'approved')
+                $query->where('status', Rental::STATUS_APPROVED)
                     ->orWhere(function ($subQuery): void {
-                        $subQuery->where('status', 'active')
+                        $subQuery->where('status', Rental::STATUS_ACTIVE)
                             ->where('start_date', '>', now());
                     });
             });

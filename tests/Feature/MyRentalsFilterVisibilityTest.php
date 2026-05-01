@@ -21,12 +21,10 @@ class MyRentalsFilterVisibilityTest extends TestCase
         $renter = User::factory()->create();
         $owner = User::factory()->create();
 
-        $category = Category::query()->create([
-            'name' => 'Books',
-            'slug' => 'books',
-            'icon' => 'book',
-            'is_active' => true,
-        ]);
+        $category = Category::query()->firstOrCreate(
+            ['slug' => 'books'],
+            ['name' => 'Books', 'icon' => 'book', 'is_active' => true]
+        );
 
         $item = Item::query()->create([
             'user_id' => $owner->id,
@@ -34,7 +32,6 @@ class MyRentalsFilterVisibilityTest extends TestCase
             'description' => 'Sample Description',
             'price' => 50,
             'status' => 'available',
-            'category' => $category->slug,
             'category_id' => $category->id,
         ]);
 
@@ -51,10 +48,11 @@ class MyRentalsFilterVisibilityTest extends TestCase
 
         Livewire::test(MyRentals::class)
             ->call('setFilter', 'due_soon')
-            ->assertSee('All Rentals')
-            ->assertSee('Pending')
+            ->assertSee('All Listings')
+            ->assertSee('Pending Request')
+            ->assertSee('Approved Request')
             ->assertSee('Due Soon')
-            ->assertSee('Ongoing')
+            ->assertSee('Active Loan')
             ->assertSee('No rentals for this filter');
     }
 
@@ -65,12 +63,10 @@ class MyRentalsFilterVisibilityTest extends TestCase
         $renter = User::factory()->create();
         $owner = User::factory()->create();
 
-        $category = Category::query()->create([
-            'name' => 'Books',
-            'slug' => 'books',
-            'icon' => 'book',
-            'is_active' => true,
-        ]);
+        $category = Category::query()->firstOrCreate(
+            ['slug' => 'books'],
+            ['name' => 'Books', 'icon' => 'book', 'is_active' => true]
+        );
 
         $item = Item::query()->create([
             'user_id' => $owner->id,
@@ -78,7 +74,6 @@ class MyRentalsFilterVisibilityTest extends TestCase
             'description' => 'Sample Description',
             'price' => 50,
             'status' => 'available',
-            'category' => $category->slug,
             'category_id' => $category->id,
         ]);
 
@@ -106,12 +101,10 @@ class MyRentalsFilterVisibilityTest extends TestCase
         $renter = User::factory()->create();
         $owner = User::factory()->create();
 
-        $category = Category::query()->create([
-            'name' => 'Books',
-            'slug' => 'books',
-            'icon' => 'book',
-            'is_active' => true,
-        ]);
+        $category = Category::query()->firstOrCreate(
+            ['slug' => 'books'],
+            ['name' => 'Books', 'icon' => 'book', 'is_active' => true]
+        );
 
         $item = Item::query()->create([
             'user_id' => $owner->id,
@@ -119,7 +112,6 @@ class MyRentalsFilterVisibilityTest extends TestCase
             'description' => 'Sample Description',
             'price' => 50,
             'status' => 'available',
-            'category' => $category->slug,
             'category_id' => $category->id,
         ]);
 
@@ -139,5 +131,124 @@ class MyRentalsFilterVisibilityTest extends TestCase
             ->assertDontSee('1 rental(s) due soon!');
 
         Carbon::setTestNow();
+    }
+
+    public function test_pending_and_approved_filters_are_separated(): void
+    {
+        Carbon::setTestNow(Carbon::parse('2026-04-25 08:00:00'));
+
+        $renter = User::factory()->create();
+        $owner = User::factory()->create();
+
+        $category = Category::query()->firstOrCreate(
+            ['slug' => 'books'],
+            ['name' => 'Books', 'icon' => 'book', 'is_active' => true]
+        );
+
+        $pendingItem = Item::query()->create([
+            'user_id' => $owner->id,
+            'name' => 'Pending Rental Item',
+            'description' => 'Sample Description',
+            'price' => 50,
+            'status' => 'available',
+            'category_id' => $category->id,
+        ]);
+
+        $approvedItem = Item::query()->create([
+            'user_id' => $owner->id,
+            'name' => 'Approved Rental Item',
+            'description' => 'Sample Description',
+            'price' => 50,
+            'status' => 'available',
+            'category_id' => $category->id,
+        ]);
+
+        Rental::query()->create([
+            'item_id' => $pendingItem->id,
+            'renter_id' => $renter->id,
+            'start_date' => now()->addDays(2),
+            'end_date' => now()->addDays(5),
+            'total_price' => 100,
+            'status' => 'pending',
+        ]);
+
+        Rental::query()->create([
+            'item_id' => $approvedItem->id,
+            'renter_id' => $renter->id,
+            'start_date' => now()->addDays(3),
+            'end_date' => now()->addDays(6),
+            'total_price' => 120,
+            'status' => 'approved',
+        ]);
+
+        $this->actingAs($renter);
+
+        Livewire::test(MyRentals::class)
+            ->call('setFilter', 'pending')
+            ->assertSee('Pending Rental Item')
+            ->assertDontSee('Approved Rental Item')
+            ->call('setFilter', 'approved')
+            ->assertSee('Approved Rental Item')
+            ->assertDontSee('Pending Rental Item');
+
+        Carbon::setTestNow();
+    }
+
+    public function test_search_filters_by_item_name_or_owner_name(): void
+    {
+        $renter = User::factory()->create();
+        $targetOwner = User::factory()->create(['name' => 'Maria Santos']);
+        $otherOwner = User::factory()->create(['name' => 'John Cruz']);
+
+        $category = Category::query()->firstOrCreate(
+            ['slug' => 'books'],
+            ['name' => 'Books', 'icon' => 'book', 'is_active' => true]
+        );
+
+        $matchingItem = Item::query()->create([
+            'user_id' => $targetOwner->id,
+            'name' => 'Biology Reviewer',
+            'description' => 'Sample Description',
+            'price' => 50,
+            'status' => 'available',
+            'category_id' => $category->id,
+        ]);
+
+        $otherItem = Item::query()->create([
+            'user_id' => $otherOwner->id,
+            'name' => 'Physics Kit',
+            'description' => 'Sample Description',
+            'price' => 60,
+            'status' => 'available',
+            'category_id' => $category->id,
+        ]);
+
+        Rental::query()->create([
+            'item_id' => $matchingItem->id,
+            'renter_id' => $renter->id,
+            'start_date' => now(),
+            'end_date' => now()->addDays(2),
+            'total_price' => 100,
+            'status' => 'active',
+        ]);
+
+        Rental::query()->create([
+            'item_id' => $otherItem->id,
+            'renter_id' => $renter->id,
+            'start_date' => now(),
+            'end_date' => now()->addDays(3),
+            'total_price' => 120,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($renter);
+
+        Livewire::test(MyRentals::class)
+            ->set('search', 'biology')
+            ->assertSee('Biology Reviewer')
+            ->assertDontSee('Physics Kit')
+            ->set('search', 'maria')
+            ->assertSee('Maria Santos')
+            ->assertDontSee('John Cruz');
     }
 }

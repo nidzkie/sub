@@ -160,7 +160,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 5.5 2 7.818 2 11.5S6.5 17.5 12 17.5s10-1.818 10-5.5-4.5-6-10-6z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50">Clothing</h3>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50">Clothing &amp; Accessories</h3>
                     </div>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Fashion and formal wear</p>
                 </div>
@@ -184,7 +184,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 5.5 2 7.818 2 11.5S6.5 17.5 12 17.5s10-1.818 10-5.5-4.5-6-10-6z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50">School Supplies &amp; Accessories</h3>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-50">School Supplies</h3>
                     </div>
                     <p class="text-sm text-slate-600 dark:text-slate-400">Pens, organizers, bags, and classroom essentials</p>
                 </div>

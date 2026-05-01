@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -32,6 +34,7 @@ class User extends Authenticatable
         'bio',
         'rating',
         'is_verified_student',
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -51,28 +54,41 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_verified_student' => 'boolean',
+            'is_admin' => 'boolean',
         ];
     }
 
     // Relationships
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(Item::class);
     }
 
-    public function rentals()
+    public function rentals(): HasMany
     {
         return $this->hasMany(Rental::class, 'renter_id');
     }
 
     // Helper methods
-    public function getAverageRatingAttribute()
+    public function getAverageRatingAttribute(): float
     {
         return (float) ($this->rating ?? 0);
     }
 
-    public function isStudentVerified()
+    public function isStudentVerified(): bool
     {
-        return $this->is_verified_student;
+        return (bool) $this->is_verified_student;
+    }
+
+    public function isAdministrator(): bool
+    {
+        return (bool) $this->is_admin;
+    }
+
+    protected function rating(): Attribute
+    {
+        return Attribute::make(
+            set: fn (mixed $value): float => max(0, min(5, round((float) $value, 1)))
+        );
     }
 }

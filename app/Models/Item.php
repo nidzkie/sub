@@ -2,19 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
-    protected $fillable = ['user_id', 'name', 'description', 'price', 'condition', 'status', 'category', 'category_id', 'image_path'];
+    use SoftDeletes;
 
-    public function user()
+    protected $fillable = ['user_id', 'name', 'description', 'price', 'condition', 'status', 'category_id', 'image_path'];
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function rentals()
+    public function rentals(): HasMany
     {
         return $this->hasMany(Rental::class);
     }
@@ -24,8 +30,18 @@ class Item extends Model
         return $this->hasOne(Rental::class)->latestOfMany();
     }
 
-    public function categoryRecord()
+    public function categoryRecord(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function scopeAvailable(Builder $query): Builder
+    {
+        return $query->where('status', 'available');
+    }
+
+    public function categoryName(): string
+    {
+        return $this->categoryRecord?->name ?? 'Other';
     }
 }

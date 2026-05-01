@@ -28,14 +28,14 @@ class ItemFilterTest extends TestCase
 
         $booksCategory = Category::query()->create([
             'name' => 'Books',
-            'slug' => 'books',
+            'slug' => 'books-test-selected-category',
             'icon' => 'book',
             'is_active' => true,
         ]);
 
         $toolsCategory = Category::query()->create([
             'name' => 'Tools',
-            'slug' => 'tools',
+            'slug' => 'tools-test-selected-category',
             'icon' => 'tool',
             'is_active' => true,
         ]);
@@ -75,5 +75,35 @@ class ItemFilterTest extends TestCase
             ->assertSet('category', '5')
             ->call('applyCategoryFilter', null)
             ->assertSet('category', '');
+    }
+
+    public function test_show_more_loads_more_than_initial_twelve_items(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::query()->create([
+            'name' => 'Electronics',
+            'slug' => 'electronics-show-more-test',
+            'icon' => 'device',
+            'is_active' => true,
+        ]);
+
+        for ($index = 1; $index <= 13; $index++) {
+            Item::query()->create([
+                'user_id' => $user->id,
+                'name' => sprintf('Item %02d', $index),
+                'description' => 'Demo item description',
+                'price' => $index,
+                'condition' => 'Good',
+                'status' => 'available',
+                'category_id' => $category->id,
+            ]);
+        }
+
+        Livewire::test(ItemFilter::class)
+            ->assertSee('Item 13')
+            ->assertDontSee('Item 01')
+            ->call('loadMore')
+            ->assertSee('Item 01')
+            ->assertSet('itemsToShow', 24);
     }
 }

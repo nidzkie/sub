@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Crypt;
 
 class RentalRequestedNotification extends Notification
 {
@@ -41,16 +42,15 @@ class RentalRequestedNotification extends Notification
         return [
             'title' => 'New rental request',
             'message' => "{$this->renterName} requested to rent {$this->itemName}.",
-            'item_id' => $this->itemId,
+            'encrypted_item_id' => Crypt::encryptString((string) $this->itemId),
             'item_name' => $this->itemName,
-            'renter_id' => $this->renterId,
+            'encrypted_renter_id' => Crypt::encryptString((string) $this->renterId),
             'renter_name' => $this->renterName,
-            'rental_id' => $this->rentalId,
+            'encrypted_rental_id' => Crypt::encryptString((string) $this->rentalId),
             'start_date' => $this->startDate,
             'end_date' => $this->endDate,
             'total_price' => $this->totalPrice,
             'additional_notes' => $this->additionalNotes,
-            'url' => route('rental-requests.show', $this->rentalId),
         ];
     }
 }

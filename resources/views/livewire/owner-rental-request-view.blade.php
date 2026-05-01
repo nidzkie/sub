@@ -3,10 +3,12 @@
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h1 class="text-3xl font-black tracking-tight text-slate-900">View Request</h1>
-                <p class="text-sm text-slate-600">Review requester details and decide to grant or reject.</p>
+                <p class="text-sm text-slate-600">
+                    {{ $isOwner ? 'Review requester details and decide to grant or reject.' : 'Review your rental request details and status.' }}
+                </p>
             </div>
-            <a href="{{ route('rent-inventory-management') }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900">
-                Back to Rent Inventory
+            <a href="{{ $isOwner ? route('rent-inventory-management') : route('my-rentals') }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900">
+                {{ $isOwner ? 'Go to Rent Inventory' : 'Back to My Rentals' }}
             </a>
         </div>
 
@@ -79,7 +81,7 @@
 
                 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                     <h2 class="text-lg font-bold text-slate-900">Decision</h2>
-                    @if ($rental->status === 'pending')
+                    @if ($isOwner && $rental->status === 'pending')
                         <div class="mt-4 grid gap-3">
                             <button wire:click="grantRequest" class="rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:shadow-md">
                                 Grant Request
@@ -88,6 +90,8 @@
                                 Reject Request
                             </button>
                         </div>
+                    @elseif (! $isOwner)
+                        <p class="mt-3 text-sm text-slate-600">Only the item owner can approve or reject this request. You can monitor updates here.</p>
                     @else
                         <p class="mt-3 text-sm text-slate-600">Request already processed. The requester has been notified automatically.</p>
                     @endif

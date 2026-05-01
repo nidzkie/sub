@@ -1,7 +1,8 @@
 {
     "agents": [
-        "gemini"
+        "codex"
     ],
+    "cloud": true,
     "skills": [
         "fortify-development",
         "laravel-best-practices",

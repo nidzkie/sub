@@ -26,12 +26,12 @@ return new class extends Migration
                 'aliases' => ['sports-pe', 'sports-pe-essentials'],
             ],
             'school-supplies-accessories' => [
-                'name' => 'School Supplies & Accessories',
+                'name' => 'School Supplies',
                 'icon' => 'pencil',
                 'aliases' => ['school-supplies-accessories', 'school-supplies', 'accessories'],
             ],
             'clothing' => [
-                'name' => 'Clothing',
+                'name' => 'Clothing & Accessories',
                 'icon' => 'shirt',
                 'aliases' => ['clothing', 'clothes', 'apparel'],
             ],

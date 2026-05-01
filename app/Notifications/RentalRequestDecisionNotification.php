@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Crypt;
 
 class RentalRequestDecisionNotification extends Notification
 {
@@ -28,9 +29,9 @@ class RentalRequestDecisionNotification extends Notification
         return [
             'title' => 'Rental request update',
             'message' => "Your request for {$this->itemName} was {$decisionLabel}.",
-            'item_id' => $this->itemId,
+            'encrypted_item_id' => Crypt::encryptString((string) $this->itemId),
             'item_name' => $this->itemName,
-            'rental_id' => $this->rentalId,
+            'encrypted_rental_id' => Crypt::encryptString((string) $this->rentalId),
             'decision' => $this->decision,
             'url' => route('my-rentals'),
         ];

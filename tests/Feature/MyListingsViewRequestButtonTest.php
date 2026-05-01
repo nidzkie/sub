@@ -15,7 +15,7 @@ class MyListingsViewRequestButtonTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_my_listings_view_request_button_links_to_owner_rental_request_view(): void
+    public function test_my_listings_view_request_button_links_to_item_request_list_page(): void
     {
         $owner = User::factory()->create();
         $renter = User::factory()->create();
@@ -50,7 +50,7 @@ class MyListingsViewRequestButtonTest extends TestCase
         $this->actingAs($owner);
 
         Livewire::test(MyListings::class)
-            ->assertSee('View Request')
-            ->assertSee(route('rental-requests.show', $rental));
+            ->assertSee('View Requests')
+            ->assertSee(route('rental-requests.item', $item));
     }
 }

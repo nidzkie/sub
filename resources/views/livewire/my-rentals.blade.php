@@ -6,55 +6,113 @@
             <p class="text-gray-600 dark:text-slate-400">Track the items you've rented</p>
         </div>
 
-        <!-- Filter Buttons -->
-        <div class="mb-6 flex flex-wrap gap-3">
-            <button
-                wire:click="setFilter('all')"
-                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
-                {{ $filterStatus === 'all'
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-blue-500 dark:hover:text-blue-400' }}">
-                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                All Rentals
-            </button>
+        @php
+            $dueSoonCount = $rentals->filter(function ($r): bool {
+                $secondsLeft = now()->diffInSeconds($r->end_date, false);
+                $daysLeft = $secondsLeft >= 0
+                    ? (int) ceil($secondsLeft / 86400)
+                    : (int) floor($secondsLeft / 86400);
+                $isOnProcess = $r->status === 'approved' || ($r->status === 'active' && $r->start_date->isFuture());
 
-            <button
-                wire:click="setFilter('pending')"
-                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
-                {{ $filterStatus === 'pending'
-                    ? 'bg-yellow-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-yellow-400 hover:text-yellow-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-yellow-500 dark:hover:text-yellow-400' }}">
-                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Pending / Approved
-            </button>
+                return $r->status === 'active' && ! $isOnProcess && $daysLeft >= 0 && $daysLeft <= 7;
+            })->count();
+            $overdueCount = $rentals->filter(function ($r): bool {
+                $secondsLeft = now()->diffInSeconds($r->end_date, false);
+                $daysLeft = $secondsLeft >= 0
+                    ? (int) ceil($secondsLeft / 86400)
+                    : (int) floor($secondsLeft / 86400);
+                $isOnProcess = $r->status === 'approved' || ($r->status === 'active' && $r->start_date->isFuture());
 
-            <button
-                wire:click="setFilter('due_soon')"
-                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
-                {{ $filterStatus === 'due_soon'
-                    ? 'bg-red-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-red-400 hover:text-red-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-red-500 dark:hover:text-red-400' }}">
-                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M7.08 6.06A9 9 0 1 0 20.94 18.94M7.08 6.06a9 9 0 0 1 13.86 12.88"></path>
-                </svg>
-                Due Soon
-            </button>
+                return $r->status === 'active' && ! $isOnProcess && $daysLeft < 0;
+            })->count();
+        @endphp
 
-            <button
-                wire:click="setFilter('ongoing')"
-                class="px-4 py-2 rounded-lg font-semibold transition-all duration-200
-                {{ $filterStatus === 'ongoing'
-                    ? 'bg-green-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:border-green-400 hover:text-green-600 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:border-green-500 dark:hover:text-green-400' }}">
-                <svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                Ongoing
-            </button>
+        @if($dueSoonCount > 0)
+            <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg dark:bg-red-900/20 dark:border-red-700">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-red-800">{{ $dueSoonCount }} rental(s) due soon!</h4>
+                        <p class="text-sm text-red-700 mt-1">You have rental(s) that will be due within the next 7 days. Please plan for their return.</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if($overdueCount > 0)
+            <div class="mb-6 p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg dark:bg-orange-900/20 dark:border-orange-700">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-orange-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-orange-800">{{ $overdueCount }} rental(s) are overdue!</h4>
+                        <p class="text-sm text-orange-700 mt-1">Please return these items as soon as possible.</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <div class="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
+            <p class="mb-3 text-xl font-bold text-slate-900 dark:text-slate-100">Search Item or Owner</p>
+
+            <div class="flex flex-col gap-3 xl:flex-row xl:items-center">
+                <div class="relative w-full lg:max-w-sm">
+                    <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.3-4.3m1.8-5.2a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                        type="text"
+                        wire:model.live.debounce.300ms="search"
+                        placeholder="Search by item name or owner name..."
+                        class="w-full rounded-xl border border-slate-300 bg-white py-3 pl-12 pr-4 text-base text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
+                    >
+                </div>
+
+                <div class="grid w-full grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+                    <button
+                        wire:click="setFilter('all')"
+                        class="{{ $filterStatus === 'all' ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'border border-slate-300 bg-white text-slate-700 hover:border-blue-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500' }} inline-flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition"
+                    >
+                        <span>All Rentals</span>
+                        <span class="{{ $filterStatus === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }} ms-2 inline-flex min-w-7 items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold">{{ $allCount }}</span>
+                    </button>
+
+                    <button
+                        wire:click="setFilter('due_soon')"
+                        class="{{ $filterStatus === 'due_soon' ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'border border-slate-300 bg-white text-slate-700 hover:border-blue-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500' }} inline-flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition"
+                    >
+                        <span>Due Soon</span>
+                        <span class="{{ $filterStatus === 'due_soon' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }} ms-2 inline-flex min-w-7 items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold">{{ $dueSoonCount }}</span>
+                    </button>
+
+                    <button
+                        wire:click="setFilter('active')"
+                        class="{{ $filterStatus === 'active' ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'border border-slate-300 bg-white text-slate-700 hover:border-blue-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500' }} inline-flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition"
+                    >
+                        <span>Active Loan</span>
+                        <span class="{{ $filterStatus === 'active' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }} ms-2 inline-flex min-w-7 items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold">{{ $activeCount }}</span>
+                    </button>
+
+                    <button
+                        wire:click="setFilter('pending')"
+                        class="{{ $filterStatus === 'pending' ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'border border-slate-300 bg-white text-slate-700 hover:border-blue-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500' }} inline-flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition"
+                    >
+                        <span>Pending Request</span>
+                        <span class="{{ $filterStatus === 'pending' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }} ms-2 inline-flex min-w-7 items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold">{{ $pendingCount }}</span>
+                    </button>
+
+                    <button
+                        wire:click="setFilter('approved')"
+                        class="{{ $filterStatus === 'approved' ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'border border-slate-300 bg-white text-slate-700 hover:border-blue-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-blue-500' }} inline-flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition"
+                    >
+                        <span>Approved Request</span>
+                        <span class="{{ $filterStatus === 'approved' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }} ms-2 inline-flex min-w-7 items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold">{{ $approvedCount }}</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         @if($rentals->isEmpty())
@@ -74,7 +132,7 @@
                             Browse Items
                         </a>
                     @else
-                        <h3 class="mt-4 text-xl font-semibold text-gray-900">No rentals for this filter</h3>
+                        <h3 class="mt-4 text-xl font-semibold text-gray-900 dark:text-slate-100">No rentals for this filter</h3>
                         <p class="mt-2 text-gray-600 mb-8">Try another filter or go back to all rentals.</p>
                         <button wire:click="setFilter('all')" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,55 +296,6 @@
                 </div>
             @endif
 
-            <!-- Alert Messages -->
-            @php
-                $dueSoonCount = $rentals->filter(function ($r): bool {
-                    $secondsLeft = now()->diffInSeconds($r->end_date, false);
-                    $daysLeft = $secondsLeft >= 0
-                        ? (int) ceil($secondsLeft / 86400)
-                        : (int) floor($secondsLeft / 86400);
-                    $isOnProcess = $r->status === 'approved' || ($r->status === 'active' && $r->start_date->isFuture());
-
-                    return $r->status === 'active' && ! $isOnProcess && $daysLeft >= 0 && $daysLeft <= 7;
-                })->count();
-                $overdueCount = $rentals->filter(function ($r): bool {
-                    $secondsLeft = now()->diffInSeconds($r->end_date, false);
-                    $daysLeft = $secondsLeft >= 0
-                        ? (int) ceil($secondsLeft / 86400)
-                        : (int) floor($secondsLeft / 86400);
-                    $isOnProcess = $r->status === 'approved' || ($r->status === 'active' && $r->start_date->isFuture());
-
-                    return $r->status === 'active' && ! $isOnProcess && $daysLeft < 0;
-                })->count();
-            @endphp
-
-            @if($dueSoonCount > 0)
-                <div class="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg dark:bg-red-900/20 dark:border-red-700">
-                    <div class="flex items-start">
-                        <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                        <div>
-                            <h4 class="font-semibold text-red-800">{{ $dueSoonCount }} rental(s) due soon!</h4>
-                            <p class="text-sm text-red-700 mt-1">You have rental(s) that will be due within the next 7 days. Please plan for their return.</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            @if($overdueCount > 0)
-                <div class="mt-6 p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg dark:bg-orange-900/20 dark:border-orange-700">
-                    <div class="flex items-start">
-                        <svg class="w-5 h-5 text-orange-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                        <div>
-                            <h4 class="font-semibold text-orange-800">{{ $overdueCount }} rental(s) are overdue!</h4>
-                            <p class="text-sm text-orange-700 mt-1">Please return these items as soon as possible.</p>
-                        </div>
-                    </div>
-                </div>
-            @endif
         @endif
     </div>
 </div>

@@ -70,13 +70,14 @@ class OwnerRentalRequestViewTest extends TestCase
         );
     }
 
-    public function test_non_owner_cannot_open_owner_request_view(): void
+    public function test_renter_can_open_request_view_in_read_only_mode(): void
     {
         [$owner, $borrower, $rental] = $this->createRentalRequest();
         $this->actingAs($borrower);
 
         $this->get(route('rental-requests.show', $rental))
-            ->assertForbidden();
+            ->assertOk()
+            ->assertSee('Only the item owner can approve or reject this request.');
     }
 
     public function test_due_tomorrow_alert_is_visible_for_active_rental_with_one_day_left(): void

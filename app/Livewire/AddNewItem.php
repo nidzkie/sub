@@ -32,7 +32,7 @@ class AddNewItem extends Component
         'price' => 'required|numeric|min:0',
         'condition' => 'required|in:Like New,Good,Fair,Old',
         'category_id' => 'required|exists:categories,id',
-        'image' => 'nullable|image|max:1024',
+        'image' => 'nullable|image|max:25600',
     ];
 
     public function mount(): void
@@ -48,10 +48,6 @@ class AddNewItem extends Component
         abort_unless(Auth::check(), 403);
 
         $this->validate();
-
-        $category = Category::query()
-            ->where('is_active', true)
-            ->findOrFail($this->category_id);
         $imagePath = $this->image ? $this->image->store('item-photos', 'public') : null;
 
         Item::create([
@@ -60,8 +56,7 @@ class AddNewItem extends Component
             'description' => $this->description,
             'price' => $this->price,
             'condition' => $this->condition,
-            'category' => $category->slug,
-            'category_id' => $category->id,
+            'category_id' => $this->category_id,
             'image_path' => $imagePath,
         ]);
 

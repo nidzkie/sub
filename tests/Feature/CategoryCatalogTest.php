@@ -16,8 +16,8 @@ class CategoryCatalogTest extends TestCase
 
         $this->assertTrue($categoryNames->contains('Books'));
         $this->assertTrue($categoryNames->contains('Electronics & Gadgets'));
-        $this->assertTrue($categoryNames->contains('School Supplies & Accessories'));
-        $this->assertTrue($categoryNames->contains('Clothing'));
+        $this->assertTrue($categoryNames->contains('School Supplies'));
+        $this->assertTrue($categoryNames->contains('Clothing & Accessories'));
 
         $this->assertFalse($categoryNames->contains('Electronics'));
         $this->assertFalse($categoryNames->contains('Gadgets'));

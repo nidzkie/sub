@@ -14,26 +14,37 @@ class OwnerRentalRequestView extends Component
 {
     public Rental $rental;
 
+    public bool $isOwner = false;
+
     public function mount(Rental $rental): void
     {
         abort_unless(Auth::check(), 403);
 
         $this->rental = Rental::query()
             ->whereKey($rental->id)
-            ->whereHas('item', fn ($query) => $query->where('user_id', Auth::id()))
             ->with(['item.user', 'renter'])
             ->firstOrFail();
+
+        $this->isOwner = (int) $this->rental->item->user_id === (int) Auth::id();
+        $isRenter = (int) $this->rental->renter_id === (int) Auth::id();
+
+        abort_unless($this->isOwner || $isRenter, 403);
     }
 
     public function grantRequest(): void
     {
         abort_unless(Auth::check(), 403);
+        abort_unless($this->isOwner, 403);
 
         if ($this->rental->status !== 'pending') {
             return;
         }
 
-        $this->rental->update(['status' => 'approved']);
+        $this->rental->update([
+            'status' => Rental::STATUS_APPROVED,
+            'approved_at' => now(),
+            'cancelled_at' => null,
+        ]);
         $this->rental->renter->notify(new RentalRequestDecisionNotification(
             rentalId: $this->rental->id,
             itemId: $this->rental->item->id,
@@ -48,12 +59,16 @@ class OwnerRentalRequestView extends Component
     public function rejectRequest(): void
     {
         abort_unless(Auth::check(), 403);
+        abort_unless($this->isOwner, 403);
 
         if ($this->rental->status !== 'pending') {
             return;
         }
 
-        $this->rental->update(['status' => 'cancelled']);
+        $this->rental->update([
+            'status' => Rental::STATUS_CANCELLED,
+            'cancelled_at' => now(),
+        ]);
         $this->rental->renter->notify(new RentalRequestDecisionNotification(
             rentalId: $this->rental->id,
             itemId: $this->rental->item->id,
@@ -78,6 +93,7 @@ class OwnerRentalRequestView extends Component
             'daysRequested' => $daysRequested,
             'daysLeft' => max(0, $daysLeft),
             'dueTomorrow' => $this->rental->status === 'active' && $daysLeft === 1,
+            'isOwner' => $this->isOwner,
         ]);
     }
 }

@@ -22,6 +22,73 @@
             </div>
         </div>
 
+        <div class="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div class="w-full md:max-w-md">
+                    <label for="listing-search" class="sr-only">Search listings</label>
+                    <div class="relative">
+                        <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35m1.35-5.4a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </span>
+                        <input
+                            id="listing-search"
+                            type="text"
+                            wire:model.live.debounce.300ms="search"
+                            placeholder="Search by item name or description..."
+                            class="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
+                    <div class="w-full sm:w-44">
+                        <label for="availability-filter" class="sr-only">Filter by availability</label>
+                        <select
+                            id="availability-filter"
+                            wire:model.live="availability"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                        >
+                            <option value="">All Availability</option>
+                            <option value="available">Available</option>
+                            <option value="rented">Rented</option>
+                        </select>
+                    </div>
+
+                    <div class="w-full sm:w-52">
+                        <label for="category-filter" class="sr-only">Filter by category</label>
+                        <select
+                            id="category-filter"
+                            wire:model.live="categoryId"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                        >
+                            <option value="">All Categories</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="w-full sm:w-44">
+                        <label for="sort-filter" class="sr-only">Sort listings</label>
+                        <select
+                            id="sort-filter"
+                            wire:model.live="sortBy"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                        >
+                            <option value="newest">Sort: Newest</option>
+                            <option value="oldest">Sort: Oldest</option>
+                            <option value="name_asc">Name: A to Z</option>
+                            <option value="name_desc">Name: Z to A</option>
+                            <option value="price_low_high">Price: Low to High</option>
+                            <option value="price_high_low">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Success Message -->
         @if (session()->has('message'))
             <div class="mb-6 p-4 md:p-5 bg-green-50 border border-green-200 text-green-800 rounded-xl shadow-sm dark:bg-green-900/20 dark:border-green-700 dark:text-green-300">
@@ -109,14 +176,14 @@
                             <div class="flex gap-2">
                                 @if ($item->latestRental)
                                     <a
-                                        href="{{ route('rental-requests.show', $item->latestRental) }}"
+                                        href="{{ route('rental-requests.item', $item) }}"
                                         class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors"
                                     >
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                         </svg>
-                                        View Request
+                                        View Requests
                                     </a>
                                 @else
                                     <span class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-slate-300 text-slate-600 text-sm font-semibold rounded-lg cursor-not-allowed">
@@ -124,7 +191,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                         </svg>
-                                        View Request
+                                        View Requests
                                     </span>
                                 @endif
                                 <a
@@ -137,8 +204,7 @@
                                     Edit
                                 </a>
                                 <button
-                                    wire:click="deleteItem({{ $item->id }})"
-                                    wire:confirm="Are you sure you want to delete '{{ $item->name }}'? This action cannot be undone."
+                                    wire:click="confirmDeleteItem({{ $item->id }})"
                                     class="inline-flex items-center justify-center px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-lg transition-colors"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,4 +225,36 @@
             @endif
         @endif
     </div>
+
+    @if($showDeleteModal)
+        <div class="fixed inset-0 z-[70] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" wire:click="cancelDeleteItem"></div>
+
+            <div class="relative w-full max-w-xl rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-800 p-6 shadow-2xl">
+                <h2 class="text-2xl font-bold text-white">Confirm Delete</h2>
+                <p class="mt-4 text-lg leading-relaxed text-slate-100">
+                    Are you sure you want to delete
+                    <span class="font-semibold text-white">"{{ $pendingDeleteItemName }}"</span>?
+                    This action cannot be undone.
+                </p>
+
+                <div class="mt-6 flex justify-end gap-3">
+                    <button
+                        type="button"
+                        wire:click="cancelDeleteItem"
+                        class="rounded-xl border border-slate-500 px-5 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-slate-700"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="button"
+                        wire:click="deleteItem"
+                        class="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
+                    >
+                        Delete Item
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
