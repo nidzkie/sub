@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Rental;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
 
 class NotificationsDropdown extends Component
@@ -20,14 +22,23 @@ class NotificationsDropdown extends Component
 
         $notificationData = $notification->data;
         $notification->delete();
+        $notificationData = $this->decodeNotificationData($notificationData);
+
+        $url = $notificationData['url'] ?? null;
+
+        if ($url) {
+            return redirect()->to($url);
+        }
 
         $rentalId = $notificationData['rental_id'] ?? $this->resolveRentalIdFromNotificationData($notificationData);
 
         if ($rentalId) {
-            return redirect()->route('rental-requests.show', $rentalId);
-        }
+            if ($this->currentUserOwnsRentalRequest($rentalId)) {
+                return redirect()->route('rental-requests.show', $rentalId);
+            }
 
-        $url = $notificationData['url'] ?? null;
+            return redirect()->route('my-rentals');
+        }
 
         if (! $url && isset($notificationData['item_id'])) {
             $url = route('item.view', $notificationData['item_id']);
@@ -58,6 +69,54 @@ class NotificationsDropdown extends Component
         return $rental?->id;
     }
 
+    /**
+     * @param  array<string, mixed>  $notificationData
+     * @return array<string, mixed>
+     */
+    private function decodeNotificationData(array $notificationData): array
+    {
+        if (isset($notificationData['encrypted_rental_id']) && ! isset($notificationData['rental_id'])) {
+            $notificationData['rental_id'] = $this->decryptInt($notificationData['encrypted_rental_id']);
+        }
+
+        if (isset($notificationData['encrypted_item_id']) && ! isset($notificationData['item_id'])) {
+            $notificationData['item_id'] = $this->decryptInt($notificationData['encrypted_item_id']);
+        }
+
+        if (isset($notificationData['encrypted_renter_id']) && ! isset($notificationData['renter_id'])) {
+            $notificationData['renter_id'] = $this->decryptInt($notificationData['encrypted_renter_id']);
+        }
+
+        return $notificationData;
+    }
+
+    private function decryptInt(mixed $value): ?int
+    {
+        if (is_int($value) || (is_string($value) && ctype_digit($value))) {
+            return (int) $value;
+        }
+
+        if (! is_string($value) || $value === '') {
+            return null;
+        }
+
+        try {
+            $decryptedValue = Crypt::decryptString($value);
+        } catch (DecryptException) {
+            return null;
+        }
+
+        return ctype_digit($decryptedValue) ? (int) $decryptedValue : null;
+    }
+
+    private function currentUserOwnsRentalRequest(int $rentalId): bool
+    {
+        return Rental::query()
+            ->whereKey($rentalId)
+            ->whereHas('item', fn ($itemQuery) => $itemQuery->where('user_id', Auth::id()))
+            ->exists();
+    }
+
     public function markAsRead(string $notificationId): void
     {
         abort_unless(Auth::check(), 403);
@@ -80,7 +139,9 @@ class NotificationsDropdown extends Component
     {
         abort_unless(Auth::check(), 403);
 
-        $notifications = Auth::user()
+        $user = Auth::user()->loadCount('unreadNotifications');
+
+        $notifications = $user
             ->notifications()
             ->latest()
             ->limit(8)
@@ -88,7 +149,7 @@ class NotificationsDropdown extends Component
 
         return view('livewire.notifications-dropdown', [
             'notifications' => $notifications,
-            'unreadCount' => Auth::user()->unreadNotifications()->count(),
+            'unreadCount' => (int) ($user->unread_notifications_count ?? 0),
         ]);
     }
 }

@@ -81,7 +81,7 @@
             <div class="mb-8 flex items-center justify-between">
                 
                 <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
-                    {{ $items->count() }} Items Available
+                    Showing {{ $items->count() }} of {{ $totalItems }} Items Available
                 </span>
             </div>
 
@@ -122,7 +122,7 @@
                                         <div class="text-[11px] text-slate-400 dark:text-slate-500">per day</div>
                                     </div>
                                     <div class="text-right text-[11px] text-slate-400 dark:text-slate-500">
-                                        <div>{{ $item->categoryRecord?->name ?? ucfirst(str_replace('-', ' ', $item->category ?? 'Other')) }}</div>
+                                        <div>{{ $item->categoryName() }}</div>
                                         <div class="font-medium">{{ ucfirst($item->status) }}</div>
                                     </div>
                                 </div>
@@ -140,6 +140,21 @@
                         </article>
                     @endforeach
                 </div>
+
+                @if ($canLoadMore)
+                    <div class="mt-8 flex justify-center">
+                        <button
+                            type="button"
+                            wire:click="loadMore"
+                            wire:loading.attr="disabled"
+                            wire:target="loadMore"
+                            class="rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+                        >
+                            <span wire:loading.remove wire:target="loadMore">Show More</span>
+                            <span wire:loading wire:target="loadMore">Loading...</span>
+                        </button>
+                    </div>
+                @endif
             @endif
         </div>
     </div>

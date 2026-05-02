@@ -23,8 +23,8 @@ return new class extends Migration
             ['name' => 'Electronics & Gadgets', 'slug' => 'electronics-gadgets', 'icon' => 'device', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Tools', 'slug' => 'tools', 'icon' => 'tool', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Sports & PE Essentials', 'slug' => 'sports-pe', 'icon' => 'fitness', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'School Supplies & Accessories', 'slug' => 'school-supplies-accessories', 'icon' => 'pencil', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Clothing', 'slug' => 'clothing', 'icon' => 'shirt', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'School Supplies', 'slug' => 'school-supplies-accessories', 'icon' => 'pencil', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Clothing & Accessories', 'slug' => 'clothing', 'icon' => 'shirt', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 

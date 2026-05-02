@@ -11,6 +11,12 @@
         <div class="hidden flex-grow items-center justify-center sm:flex">
             @auth
                 <div class="flex items-center gap-2 rounded-full bg-slate-50 px-2 py-1 ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
+                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l8-8 8 8M5 10v10h14V10" />
+                        </svg>
+                        Dashboard
+                    </a>
                     <a href="{{ route('home') }}" class="{{ request()->routeIs('home', 'categories.show') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -23,12 +29,20 @@
                         </svg>
                         My Rentals
                     </a>
-                    <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') || request()->routeIs('rental-requests.show') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
+                    <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') || request()->routeIs('rental-requests.show') || request()->routeIs('rental-requests.item') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                         </svg>
                         My Listings
                     </a>
+                    @if (Auth::user()?->isAdministrator())
+                        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            Admin
+                        </a>
+                    @endif
                 </div>
             @endauth
         </div>
@@ -90,6 +104,12 @@
         <div class="space-y-2 text-sm">
             @auth
                 <div class="space-y-2 rounded-2xl bg-slate-50 p-2 ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
+                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} flex items-center gap-3 rounded-xl px-4 py-3 font-semibold transition">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l8-8 8 8M5 10v10h14V10" />
+                        </svg>
+                        Dashboard
+                    </a>
                     <a href="{{ route('home') }}" class="{{ request()->routeIs('home', 'categories.show') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} flex items-center gap-3 rounded-xl px-4 py-3 font-semibold transition">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -102,12 +122,20 @@
                         </svg>
                         My Rentals
                     </a>
-                    <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') || request()->routeIs('rental-requests.show') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} flex items-center gap-3 rounded-xl px-4 py-3 font-semibold transition">
+                    <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') || request()->routeIs('rental-requests.show') || request()->routeIs('rental-requests.item') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} flex items-center gap-3 rounded-xl px-4 py-3 font-semibold transition">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                         </svg>
                         My Listings
                     </a>
+                    @if (Auth::user()?->isAdministrator())
+                        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} flex items-center gap-3 rounded-xl px-4 py-3 font-semibold transition">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            Admin
+                        </a>
+                    @endif
                 </div>
                 <a href="{{ route('profile.show') }}" class="flex items-center gap-3 px-1 pt-2 text-slate-600 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100">
                     <x-profile-avatar :user="Auth::user()" size="md" />

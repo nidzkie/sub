@@ -154,7 +154,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
                                 <p class="text-gray-600 font-medium dark:text-slate-300">Click or drag image here</p>
-                                <p class="text-gray-500 text-sm dark:text-slate-500">PNG, JPG, GIF up to 2MB</p>
+                                <p class="text-gray-500 text-sm dark:text-slate-500">PNG, JPG, GIF up to 25MB</p>
                             </div>
                         </div>
                         @error('image')

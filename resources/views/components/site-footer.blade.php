@@ -10,8 +10,13 @@
             </div>
         </div>
 
-        <div class="text-xs text-slate-500 dark:text-slate-400">
+        <div class="flex flex-col items-start gap-2 text-xs text-slate-500 dark:text-slate-400 sm:items-end">
             <span>&copy; {{ now()->year }} Campus Rental. Built for students.</span>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('terms.show') }}" class="transition hover:text-slate-900 dark:hover:text-slate-200">Terms</a>
+                <a href="{{ route('policy.show') }}" class="transition hover:text-slate-900 dark:hover:text-slate-200">Privacy</a>
+                <a href="{{ route('help-center') }}" class="transition hover:text-slate-900 dark:hover:text-slate-200">Help Center</a>
+            </div>
         </div>
     </div>
 </footer>

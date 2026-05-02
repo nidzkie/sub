@@ -37,7 +37,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'course' => ['nullable', 'string', 'max:255'],
             'year_level' => ['nullable', Rule::in(['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year'])],
             'campus' => ['nullable', Rule::in($validCampuses)],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:25600'],
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -49,7 +49,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
-                'name' => trim($input['first_name'] . ' ' . $input['last_name']),
+                'name' => trim($input['first_name'].' '.$input['last_name']),
                 'first_name' => $input['first_name'],
                 'last_name' => $input['last_name'],
                 'email' => $input['email'],
@@ -69,7 +69,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     protected function updateVerifiedUser(User $user, array $input): void
     {
         $user->forceFill([
-            'name' => trim($input['first_name'] . ' ' . $input['last_name']),
+            'name' => trim($input['first_name'].' '.$input['last_name']),
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
             'email' => $input['email'],

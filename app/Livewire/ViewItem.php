@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Item;
+use App\Models\Rental;
 use App\Notifications\RentalRequestedNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,8 @@ class ViewItem extends Component
 
     public $price;
 
+    public $condition;
+
     public $status;
 
     public $image;
@@ -42,7 +45,7 @@ class ViewItem extends Component
         'condition' => 'required|string',
         'price' => 'required|numeric|min:0',
         'status' => 'required|in:available,rented,maintenance',
-        'image' => 'nullable|image|max:1024',
+        'image' => 'nullable|image|max:25600',
     ];
 
     protected function syncFormFields(): void
@@ -50,6 +53,7 @@ class ViewItem extends Component
         $this->name = $this->item->name;
         $this->description = $this->item->description;
         $this->price = $this->item->price;
+        $this->condition = $this->item->condition;
         $this->status = $this->item->status;
         $this->image = null;
     }
@@ -84,6 +88,7 @@ class ViewItem extends Component
         $data = [
             'name' => $this->name,
             'description' => $this->description,
+            'condition' => $this->condition,
             'price' => $this->price,
             'status' => $this->status,
         ];
@@ -128,7 +133,7 @@ class ViewItem extends Component
 
         $existingRequest = $this->item->rentals()
             ->where('renter_id', Auth::id())
-            ->whereIn('status', ['pending', 'active'])
+            ->whereIn('status', [Rental::STATUS_PENDING, Rental::STATUS_ACTIVE])
             ->exists();
 
         if ($existingRequest) {
@@ -148,8 +153,8 @@ class ViewItem extends Component
             'start_date' => $start,
             'end_date' => $end,
             'total_price' => $totalPrice,
-            'payment_status' => 'outstanding',
-            'status' => 'pending',
+            'payment_status' => Rental::PAYMENT_STATUS_OUTSTANDING,
+            'status' => Rental::STATUS_PENDING,
         ]);
 
         $owner = $this->item->user;

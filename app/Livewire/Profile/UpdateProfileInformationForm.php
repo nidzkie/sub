@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Profile;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -36,7 +35,7 @@ class UpdateProfileInformationForm extends Component
                 'Tagum (Arellano)',
                 'Tagum (Visayan)',
             ])],
-            'photo' => ['nullable', 'image', 'max:1024'],
+            'photo' => ['nullable', 'image', 'max:25600'],
         ];
     }
 

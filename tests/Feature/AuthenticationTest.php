@@ -19,7 +19,9 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'email' => 'student@umindanao.edu.ph',
+        ]);
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -39,6 +41,22 @@ class AuthenticationTest extends TestCase
             'password' => 'wrong-password',
         ]);
 
+        $this->assertGuest();
+    }
+
+    public function test_users_with_non_umindanao_email_cannot_authenticate(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'outsider@example.com',
+        ]);
+
+        $response = $this->from('/login')->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors('email');
         $this->assertGuest();
     }
 }

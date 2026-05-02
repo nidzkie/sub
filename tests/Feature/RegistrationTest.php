@@ -41,7 +41,7 @@ class RegistrationTest extends TestCase
 
         $response = $this->post('/register', [
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test@umindanao.edu.ph',
             'password' => 'password',
             'password_confirmation' => 'password',
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
@@ -49,5 +49,46 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_users_with_non_umindanao_email_cannot_register(): void
+    {
+        if (! Features::enabled(Features::registration())) {
+            $this->markTestSkipped('Registration support is not enabled.');
+        }
+
+        $response = $this->from('/register')->post('/register', [
+            'name' => 'External User',
+            'email' => 'external@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+        ]);
+
+        $response->assertRedirect('/register');
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_users_must_accept_terms_and_privacy_to_register(): void
+    {
+        if (! Features::enabled(Features::registration())) {
+            $this->markTestSkipped('Registration support is not enabled.');
+        }
+
+        if (! Jetstream::hasTermsAndPrivacyPolicyFeature()) {
+            $this->markTestSkipped('Terms and privacy feature is not enabled.');
+        }
+
+        $response = $this->from('/register')->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test2@umindanao.edu.ph',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertRedirect('/register');
+        $response->assertSessionHasErrors('terms');
+        $this->assertGuest();
     }
 }

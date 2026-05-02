@@ -56,7 +56,7 @@ class EditItem extends Component
             'condition' => 'required|in:Like New,Good,Fair,Old',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:25600',
         ];
     }
 

@@ -12,9 +12,30 @@
         <div class="hidden items-center sm:flex">
             @auth
                 <div class="flex items-center gap-2 rounded-full bg-slate-50 px-2 py-1 ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
-                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} rounded-full px-4 py-2 text-sm font-semibold transition">Marketplace</a>
-                    <a href="{{ route('my-rentals') }}" class="{{ request()->routeIs('my-rentals') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} rounded-full px-4 py-2 text-sm font-semibold transition">My Rentals</a>
-                    <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} rounded-full px-4 py-2 text-sm font-semibold transition">My Listings</a>
+                    <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l8-8 8 8M5 10v10h14V10" />
+                        </svg>
+                        Dashboard
+                    </a>
+                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home', 'categories.show') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        Marketplace
+                    </a>
+                    <a href="{{ route('my-rentals') }}" class="{{ request()->routeIs('my-rentals') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        My Rentals
+                    </a>
+                    <a href="{{ route('my-listings') }}" class="{{ request()->routeIs('my-listings') || request()->routeIs('add-item') || request()->routeIs('item.view') || request()->routeIs('rental-requests.show') || request()->routeIs('rental-requests.item') ? 'bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-sm' : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100' }} inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                        My Listings
+                    </a>
                 </div>
             @endauth
         </div>
@@ -117,10 +138,25 @@
             
             <h2 class="mb-6 text-2xl font-bold text-slate-900 dark:text-slate-50">Browse Available Items By Category</h2>
 
-            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7">
+            <div class="mb-4 flex flex-wrap items-center gap-2">
+                <button
+                    type="button"
+                    wire:click="clearCategorySelection"
+                    class="{{ is_null($selectedCategory) ? 'border-blue-200 bg-blue-100 text-slate-900 dark:border-blue-700 dark:bg-blue-900/30 dark:text-blue-100' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-blue-700 dark:hover:bg-blue-900/20' }} inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-semibold transition"
+                >
+                    All Categories
+                </button>
+                @if($selectedCategory)
+                    <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                        Filtering: {{ $selectedCategory->name }}
+                    </span>
+                @endif
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
                 @foreach ($categories as $category)
-                    <button type="button" wire:click="selectCategory({{ $category->id }})" class="{{ optional($selectedCategory)->is($category) ? 'border-blue-200 bg-blue-100 text-slate-900 dark:border-blue-700 dark:bg-blue-900/30 dark:text-blue-100' : 'border-slate-200 bg-white text-slate-900 hover:bg-slate-100 hover:border-blue-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-blue-900/20 dark:hover:border-blue-700' }} w-full rounded-lg border p-3 text-left shadow-sm transition">
-                        <div class="mb-2.5 inline-flex h-8 w-8 items-center justify-center rounded-md bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300">
+                    <button type="button" wire:click="selectCategory({{ $category->id }})" class="{{ optional($selectedCategory)->is($category) ? 'border-blue-200 bg-blue-100 text-slate-900 dark:border-blue-700 dark:bg-blue-900/30 dark:text-blue-100' : 'border-slate-200 bg-white text-slate-900 hover:bg-slate-100 hover:border-blue-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-blue-900/20 dark:hover:border-blue-700' }} flex h-full min-h-44 w-full flex-col rounded-lg border p-3 text-left shadow-sm transition sm:min-h-48">
+                        <div class="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300">
                             @if ($category->icon === 'book')
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 17A2.5 2.5 0 0 0 4 19.5m2.5-2.5V5A2 2 0 0 1 8.5 3H20v14M6.5 17H20" /></svg>
                             @elseif ($category->icon === 'device')
@@ -137,11 +173,11 @@
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l.7 2.154a1 1 0 0 0 .95.69h2.264c.969 0 1.371 1.24.588 1.81l-1.832 1.331a1 1 0 0 0-.364 1.118l.7 2.154c.3.921-.755 1.688-1.539 1.118l-1.832-1.331a1 1 0 0 0-1.176 0l-1.832 1.331c-.783.57-1.838-.197-1.539-1.118l.7-2.154a1 1 0 0 0-.364-1.118L5.547 7.58c-.783-.57-.38-1.81.588-1.81H8.4a1 1 0 0 0 .95-.69l.7-2.154Z" /></svg>
                             @endif
                         </div>
-                        <h3 class="line-clamp-1 text-sm font-semibold">{{ $category->name }}</h3>
-                        <p class="{{ optional($selectedCategory)->is($category) ? 'text-slate-600 dark:text-blue-200' : 'text-slate-500 dark:text-slate-400' }} mt-1 line-clamp-2 text-[11px]">
+                        <h3 class="line-clamp-2 text-sm font-semibold leading-tight">{{ $category->name }}</h3>
+                        <p class="{{ optional($selectedCategory)->is($category) ? 'text-slate-600 dark:text-blue-200' : 'text-slate-500 dark:text-slate-400' }} mt-1 line-clamp-3 text-[11px]">
                             {{ $categoryDescriptions[$category->slug] ?? 'Browse listings in this category and quickly find what you need.' }}
                         </p>
-                        <div class="{{ optional($selectedCategory)->is($category) ? 'border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300' : 'border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-400' }} mt-2.5 border-t pt-2 text-[11px] font-semibold">
+                        <div class="{{ optional($selectedCategory)->is($category) ? 'border-blue-200 text-blue-700 dark:border-blue-700 dark:text-blue-300' : 'border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-400' }} mt-auto border-t pt-2 text-[11px] font-semibold">
                             {{ $category->available_items_count }} {{ \Illuminate\Support\Str::plural('item', $category->available_items_count) }} available
                         </div>
                     </button>
@@ -151,7 +187,7 @@
     </section>
 
     <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-    @livewire('item-filter', ['selectedCategoryId' => $selectedCategory?->id])
+    @livewire('item-filter', ['selectedCategoryId' => $selectedCategory?->id], key('item-filter-'.$selectedCategory?->id))
 </main>
 
     <x-site-footer />
