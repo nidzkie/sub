@@ -1,14 +1,12 @@
-<svg {{ $attributes }} viewBox="0 0 300 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg {{ $attributes }} viewBox="0 0 300 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="4" y="8" width="48" height="48" rx="12" fill="url(#campusRentLogoGradient)" />
+    <path d="M40 25.3333L28 18.6667L16 25.3333M40 25.3333L28 32M40 25.3333V38.6667L28 45.3333M28 32L16 25.3333M28 32V45.3333M16 25.3333V38.6667L28 45.3333" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="64" y="40" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="28" fill="#2563EB">Campus</text>
+    <text x="178" y="40" font-family="ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="28" fill="#7C3AED">Rent</text>
     <defs>
-        <linearGradient id="brandGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#8B5CF6" /> <stop offset="100%" stop-color="#3B82F6" /> </linearGradient>
+        <linearGradient id="campusRentLogoGradient" x1="4" y1="8" x2="52" y2="56" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#3B82F6" />
+            <stop offset="1" stop-color="#7C3AED" />
+        </linearGradient>
     </defs>
-
-    <path d="M10 38V18L24 8L38 18V38H10Z" fill="url(#brandGradient)"/>
-    <path d="M15 40H33V44H15V40Z" fill="#3B82F6"/>
-    <rect x="21" y="25" width="6" height="13" fill="white" fill-opacity="0.9"/>
-
-    <text x="50" y="32" font-family="ui-sans-serif, system-ui, -apple-system, sans-serif" font-weight="800" font-size="24" fill="currentColor">CAMPUS</text>
-
-    <text x="155" y="32" font-family="ui-sans-serif, system-ui, -apple-system, sans-serif" font-weight="400" font-size="24" fill="url(#brandGradient)">RENTAL</text>
 </svg>

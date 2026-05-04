@@ -48,7 +48,7 @@ class MyRentalsFilterVisibilityTest extends TestCase
 
         Livewire::test(MyRentals::class)
             ->call('setFilter', 'due_soon')
-            ->assertSee('All Listings')
+            ->assertSee('All Rentals')
             ->assertSee('Pending Request')
             ->assertSee('Approved Request')
             ->assertSee('Due Soon')

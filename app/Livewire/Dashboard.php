@@ -68,6 +68,8 @@ class Dashboard extends Component
             ->where('payment_status', Rental::PAYMENT_STATUS_FULLY_PAID)
             ->count();
 
+        $totalEarnings = (float) (clone $nonCancelledRentalsQuery)->sum('paid_amount');
+
         $overduePayments = (clone $nonCancelledRentalsQuery)
             ->where('payment_status', '!=', Rental::PAYMENT_STATUS_FULLY_PAID)
             ->whereDate('end_date', '<', $now->toDateString())
@@ -145,6 +147,7 @@ class Dashboard extends Component
             'partialPayments' => $partialPayments,
             'paidPayments' => $paidPayments,
             'overduePayments' => $overduePayments,
+            'totalEarnings' => $totalEarnings,
             'recentActivities' => $recentActivities,
         ]);
     }

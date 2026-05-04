@@ -1,71 +1,110 @@
 <x-guest-layout>
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-[#E8F1FF]">
+    <div class="min-h-screen bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-100">
+        <div class="mx-auto grid min-h-screen max-w-7xl grid-cols-1 lg:grid-cols-2">
+            <section class="hidden border-r border-slate-200 bg-white px-10 py-10 dark:border-slate-800 dark:bg-slate-900 lg:flex lg:flex-col xl:px-14">
+                <a href="{{ route('landing') }}" class="flex items-center gap-3">
+                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 text-white shadow-lg shadow-blue-600/25">
+                        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 8-9-5-9 5m18 0-9 5m9-5v8l-9 5m0-8L3 8m9 5v8M3 8v8l9 5" />
+                        </svg>
+                    </span>
+                    <span class="text-2xl font-extrabold text-blue-600 dark:text-blue-400">Campus<span class="text-violet-600 dark:text-violet-400">Rent</span></span>
+                </a>
 
-        <div class="w-full sm:max-w-md mt-6 px-10 py-10 bg-white shadow-lg overflow-hidden sm:rounded-xl border border-gray-100 text-center">
-
-            <div class="flex justify-center mb-4">
-                <div class="bg-blue-600 rounded-full p-3 shadow-md">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                    </svg>
-                </div>
-            </div>
-
-            <h2 class="text-2xl font-bold text-gray-800">Create Account</h2>
-            <p class="text-gray-500 text-sm mb-6">Join the Campus Rental community</p>
-
-            <x-validation-errors class="mb-4 text-left" />
-
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
-
-                <div class="text-left">
-                    <x-label for="name" value="{{ __('Full Name') }}" class="font-semibold text-gray-700" />
-                    <x-input id="name" class="block mt-1 w-full bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg" type="text" name="name" :value="old('name')" required autofocus placeholder="Juan Dela Cruz" />
+                <div class="mt-24 max-w-xl">
+                    <p class="inline-flex rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-500/20">Student sharing made simple</p>
+                    <h1 class="mt-6 text-5xl font-extrabold tracking-normal text-slate-950 dark:text-white">Join the campus rental community.</h1>
+                    <p class="mt-5 text-xl leading-relaxed text-slate-600 dark:text-slate-300">Borrow what you need, lend what you own, and keep useful items circulating around campus.</p>
                 </div>
 
-                <div class="mt-4 text-left">
-                    <x-label for="email" value="{{ __('Email') }}" class="font-semibold text-gray-700" />
-                    <x-input id="email" class="block mt-1 w-full bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg" type="email" name="email" :value="old('email')" required placeholder="juan.dela@gmail.com" />
-                </div>
-
-                <div class="mt-4 text-left">
-                    <x-label for="password" value="{{ __('Password') }}" class="font-semibold text-gray-700" />
-                    <x-input id="password" class="block mt-1 w-full bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg" type="password" name="password" required placeholder="••••••••" />
-                </div>
-
-                <div class="mt-4 text-left">
-                    <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" class="font-semibold text-gray-700" />
-                    <x-input id="password_confirmation" class="block mt-1 w-full bg-gray-50 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg" type="password" name="password_confirmation" required placeholder="••••••••" />
-                </div>
-
-                @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                    <div class="mt-4 text-left">
-                        <x-label for="terms">
-                            <div class="flex items-center">
-                                <x-checkbox name="terms" id="terms" required class="text-blue-600 rounded focus:ring-blue-500" />
-                                <div class="ms-2 text-xs text-gray-600">
-                                    {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                            'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline hover:text-blue-600">'.__('Terms').'</a>',
-                                            'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline hover:text-blue-600">'.__('Privacy').'</a>',
-                                    ]) !!}
-                                </div>
-                            </div>
-                        </x-label>
+                <div class="mt-20 rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-950">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-3xl font-extrabold text-blue-600 dark:text-blue-300">01</p>
+                            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Create account</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-300">02</p>
+                            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Browse items</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-extrabold text-purple-600 dark:text-purple-300">03</p>
+                            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Rent or list</p>
+                        </div>
                     </div>
-                @endif
-
-                <div class="mt-8">
-                    <button type="submit" class="w-full bg-[#0D1117] hover:bg-black text-white font-bold py-3 rounded-lg transition duration-200">
-                        Create Account
-                    </button>
                 </div>
-            </form>
+            </section>
 
-            <div class="mt-6 text-sm text-gray-600">
-                Already have an account?
-                <a href="{{ route('login') }}" class="text-blue-600 font-semibold hover:underline">Sign in</a>
-            </div>
+            <main class="flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 xl:px-16">
+                <div class="w-full max-w-lg">
+                    <div class="mb-8 flex items-center justify-center gap-3 lg:hidden">
+                        <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 text-white shadow-lg shadow-blue-600/25">
+                            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 8-9-5-9 5m18 0-9 5m9-5v8l-9 5m0-8L3 8m9 5v8M3 8v8l9 5" />
+                            </svg>
+                        </span>
+                        <span class="text-2xl font-extrabold text-blue-600 dark:text-blue-400">Campus<span class="text-violet-600 dark:text-violet-400">Rent</span></span>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/60 dark:border-slate-800 dark:bg-slate-900 dark:shadow-slate-950/40 sm:p-9">
+                        <div>
+                            <h2 class="text-3xl font-extrabold tracking-normal text-slate-950 dark:text-white">Create account</h2>
+                            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Sign up with your University of Mindanao email.</p>
+                        </div>
+
+                        <x-validation-errors class="mt-6 text-left" />
+
+                        <form method="POST" action="{{ route('register') }}" class="mt-7 space-y-5">
+                            @csrf
+
+                            <div class="space-y-2">
+                                <x-label for="name" value="{{ __('Full Name') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                <x-input id="name" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="text" name="name" :value="old('name')" required autofocus placeholder="Juan Dela Cruz" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <x-label for="email" value="{{ __('Email Address') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                <x-input id="email" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="email" name="email" :value="old('email')" required placeholder="juan@umindanao.edu.ph" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <x-label for="password" value="{{ __('Password') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                <x-input id="password" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="password" name="password" required placeholder="********" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                <x-input id="password_confirmation" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="password" name="password_confirmation" required placeholder="********" />
+                            </div>
+
+                            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
+                                <div class="pt-1">
+                                    <x-label for="terms">
+                                        <div class="flex items-start gap-3 rounded-xl bg-slate-50 p-4 dark:bg-slate-950">
+                                            <x-checkbox name="terms" id="terms" required class="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500/20 dark:border-slate-700" />
+                                            <div class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
+                                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-300">'.__('Terms').'</a>',
+                                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-300">'.__('Privacy').'</a>',
+                                                ]) !!}
+                                            </div>
+                                        </div>
+                                    </x-label>
+                                </div>
+                            @endif
+
+                            <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-5 py-3.5 font-bold text-white shadow-lg shadow-blue-600/25 transition hover:-translate-y-0.5 hover:shadow-xl">
+                                Create Account
+                            </button>
+                        </form>
+
+                        <div class="mt-7 border-t border-slate-100 pt-6 text-center text-sm text-slate-600 dark:border-slate-800 dark:text-slate-300">
+                            Already have an account?
+                            <a href="{{ route('login') }}" class="font-bold text-blue-600 transition hover:text-blue-700 dark:text-blue-300">Sign in</a>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 </x-guest-layout>
