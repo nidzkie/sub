@@ -15,9 +15,13 @@
     <!-- Navigation -->
     <nav class="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 sticky top-0 z-50 transition-colors">
         <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('landing') }}" class="flex items-center gap-2 group">
-                <span class="inline-flex h-6 w-6 items-center justify-center rounded bg-gradient-primary text-xs font-bold text-white group-hover:shadow-lg group-hover:shadow-primary-500/50 transition-all duration-300">CR</span>
-                <span class="text-sm font-semibold text-slate-900 dark:text-slate-50 sm:text-base">Campus Rental</span>
+            <a href="{{ route('landing') }}" class="flex items-center gap-3 group">
+                <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 text-white shadow-lg shadow-blue-600/25 transition-all duration-300 group-hover:-translate-y-0.5">
+                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 8-9-5-9 5m18 0-9 5m9-5v8l-9 5m0-8L3 8m9 5v8M3 8v8l9 5" />
+                    </svg>
+                </span>
+                <span class="text-xl font-extrabold tracking-normal text-blue-600 sm:text-2xl dark:text-blue-400">Campus<span class="text-violet-600 dark:text-violet-400">Rent</span></span>
             </a>
 
             <div class="flex items-center gap-3">
