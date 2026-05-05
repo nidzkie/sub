@@ -125,8 +125,8 @@
                     <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden dark:bg-slate-900 dark:shadow-slate-900/40">
                         <!-- Item Image -->
                         <div class="relative h-48 bg-gray-200 overflow-hidden dark:bg-slate-800">
-                            @if($item->image_path)
-                                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            @if($item->imageUrl())
+                                <img src="{{ $item->imageUrl() }}" alt="{{ $item->name }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                             @else
                                 <div class="w-full h-full flex items-center justify-center">
                                     <svg class="h-16 w-16 text-gray-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

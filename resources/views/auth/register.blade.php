@@ -57,14 +57,46 @@
                         <form method="POST" action="{{ route('register') }}" class="mt-7 space-y-5">
                             @csrf
 
-                            <div class="space-y-2">
-                                <x-label for="name" value="{{ __('Full Name') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
-                                <x-input id="name" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="text" name="name" :value="old('name')" required autofocus placeholder="Juan Dela Cruz" />
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <div class="space-y-2">
+                                    <x-label for="first_name" value="{{ __('First Name') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                    <x-input id="first_name" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="given-name" placeholder="Juan" />
+                                </div>
+
+                                <div class="space-y-2">
+                                    <x-label for="last_name" value="{{ __('Last Name') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                    <x-input id="last_name" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="text" name="last_name" :value="old('last_name')" required autocomplete="family-name" placeholder="Dela Cruz" />
+                                </div>
                             </div>
 
                             <div class="space-y-2">
                                 <x-label for="email" value="{{ __('Email Address') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
-                                <x-input id="email" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="email" name="email" :value="old('email')" required placeholder="juan@umindanao.edu.ph" />
+                                <x-input id="email" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="juan@umindanao.edu.ph" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <x-label for="phone_number" value="{{ __('Phone Number') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                <x-input id="phone_number" class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white" type="tel" name="phone_number" :value="old('phone_number')" required autocomplete="tel" placeholder="09123456789" />
+                            </div>
+
+                            <div class="space-y-2">
+                                <x-label for="course" value="{{ __('Program') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                <select id="course" name="course" required class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white">
+                                    <option value="">Select Program</option>
+                                    @foreach (\App\Models\User::PROGRAMS as $program)
+                                        <option value="{{ $program }}" @selected(old('course') === $program)>{{ $program }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="space-y-2">
+                                <x-label for="year_level" value="{{ __('School Level') }}" class="text-sm font-semibold text-slate-700 dark:text-slate-200" />
+                                <select id="year_level" name="year_level" required class="block w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 text-slate-950 transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-950 dark:text-white">
+                                    <option value="">Select School Level</option>
+                                    @foreach (\App\Models\User::SCHOOL_LEVELS as $schoolLevel)
+                                        <option value="{{ $schoolLevel }}" @selected(old('year_level') === $schoolLevel)>{{ $schoolLevel }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="space-y-2">

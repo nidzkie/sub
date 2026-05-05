@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Item extends Model
 {
@@ -43,5 +44,14 @@ class Item extends Model
     public function categoryName(): string
     {
         return $this->categoryRecord?->name ?? 'Other';
+    }
+
+    public function imageUrl(): ?string
+    {
+        if (! $this->image_path || ! Storage::disk('public')->exists($this->image_path)) {
+            return null;
+        }
+
+        return '/storage/'.ltrim(str_replace('\\', '/', $this->image_path), '/');
     }
 }

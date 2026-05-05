@@ -98,8 +98,8 @@
                     @foreach ($items as $item)
                         <article class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900 dark:shadow-slate-900/50 dark:hover:shadow-slate-900/70">
                             <div class="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800">
-                                @if ($item->image_path)
-                                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-110">
+                                @if ($item->imageUrl())
+                                    <img src="{{ $item->imageUrl() }}" alt="{{ $item->name }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-110">
                                 @else
                                     <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
                                         <svg class="h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

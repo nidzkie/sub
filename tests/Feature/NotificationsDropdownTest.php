@@ -187,4 +187,29 @@ class NotificationsDropdownTest extends TestCase
             ->call('openNotification', $notification->id)
             ->assertRedirect(route('my-rentals'));
     }
+
+    public function test_open_message_notification_redirects_to_messages_anchor(): void
+    {
+        $renter = User::factory()->create();
+        $messageUrl = route('rental-requests.show', 10).'#messages';
+
+        $notification = $renter->notifications()->create([
+            'id' => (string) Str::uuid(),
+            'type' => 'App\\Notifications\\RentalMessageSentNotification',
+            'data' => [
+                'title' => 'New message',
+                'message' => 'Owner: Please bring an ID',
+                'rental_id' => 10,
+                'url' => $messageUrl,
+            ],
+        ]);
+
+        $this->actingAs($renter);
+
+        Livewire::test(NotificationsDropdown::class)
+            ->call('openNotification', $notification->id)
+            ->assertRedirect($messageUrl);
+
+        $this->assertDatabaseMissing('notifications', ['id' => $notification->id]);
+    }
 }

@@ -26,8 +26,8 @@
                 <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 p-6 md:p-8 lg:p-10">
                         <div class="flex flex-col">
-                            @if($item->image_path)
-                                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="w-full h-auto object-cover rounded-xl shadow-md">
+                            @if($item->imageUrl())
+                                <img src="{{ $item->imageUrl() }}" alt="{{ $item->name }}" class="w-full h-auto object-cover rounded-xl shadow-md">
                             @else
                                 <div class="w-full h-72 md:h-96 bg-gray-100 rounded-xl flex items-center justify-center">
                                     <svg class="h-20 w-20 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,8 +77,8 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                         <div class="space-y-4">
                             <div class="overflow-hidden rounded-lg bg-slate-100 aspect-[4/3]">
-                                @if($item->image_path)
-                                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="h-full w-full object-cover">
+                                @if($item->imageUrl())
+                                    <img src="{{ $item->imageUrl() }}" alt="{{ $item->name }}" class="h-full w-full object-cover">
                                 @else
                                     <div class="h-full w-full flex items-center justify-center">
                                         <svg class="h-20 w-20 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -263,10 +263,10 @@
                                     <p class="text-sm font-medium text-gray-700 mb-3">Preview</p>
                                     <img src="{{ $image->temporaryUrl() }}" class="h-48 w-full object-cover rounded-lg shadow-md">
                                 </div>
-                            @elseif($item->image_path)
+                            @elseif($item->imageUrl())
                                 <div class="mt-4">
                                     <p class="text-sm font-medium text-gray-700 mb-3">Current Image</p>
-                                    <img src="{{ asset('storage/' . $item->image_path) }}" class="h-48 w-full object-cover rounded-lg shadow-md">
+                                    <img src="{{ $item->imageUrl() }}" class="h-48 w-full object-cover rounded-lg shadow-md">
                                 </div>
                             @endif
                         </div>

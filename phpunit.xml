@@ -24,7 +24,7 @@
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
         <env name="DB_CONNECTION" value="mysql"/>
-        <env name="DB_DATABASE" value="campus_item__rental_system"/>
+        <env name="DB_DATABASE" value="campus_item_rental_system_testing"/>
         <env name="DB_HOST" value="127.0.0.1"/>
         <env name="DB_PORT" value="3306"/>
         <env name="DB_USERNAME" value="root"/>
@@ -33,7 +33,6 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <env name="LARAVEL_STORAGE_PATH" value="C:\laragon\www\sub\storage\testing"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>

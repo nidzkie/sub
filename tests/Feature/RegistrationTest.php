@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
 use Laravel\Jetstream\Jetstream;
@@ -20,6 +21,13 @@ class RegistrationTest extends TestCase
         $response = $this->get('/register');
 
         $response->assertStatus(200);
+        $response->assertSee('First Name');
+        $response->assertSee('Last Name');
+        $response->assertSee('Phone Number');
+        $response->assertSee('Program');
+        $response->assertSee('School Level');
+        $response->assertSee('Computing Education');
+        $response->assertSee('1st Year');
     }
 
     public function test_registration_screen_cannot_be_rendered_if_support_is_disabled(): void
@@ -40,14 +48,27 @@ class RegistrationTest extends TestCase
         }
 
         $response = $this->post('/register', [
-            'name' => 'Test User',
+            'first_name' => 'Test',
+            'last_name' => 'User',
             'email' => 'test@umindanao.edu.ph',
+            'phone_number' => '09123456789',
+            'course' => 'Computing Education',
+            'year_level' => '3rd Year',
             'password' => 'password',
             'password_confirmation' => 'password',
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
         ]);
 
         $this->assertAuthenticated();
+        $this->assertDatabaseHas('users', [
+            'name' => 'Test User',
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'test@umindanao.edu.ph',
+            'phone_number' => '09123456789',
+            'course' => 'Computing Education',
+            'year_level' => '3rd Year',
+        ]);
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
@@ -58,8 +79,12 @@ class RegistrationTest extends TestCase
         }
 
         $response = $this->from('/register')->post('/register', [
-            'name' => 'External User',
+            'first_name' => 'External',
+            'last_name' => 'User',
             'email' => 'external@example.com',
+            'phone_number' => '09123456789',
+            'course' => 'Computing Education',
+            'year_level' => '1st Year',
             'password' => 'password',
             'password_confirmation' => 'password',
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
@@ -67,6 +92,51 @@ class RegistrationTest extends TestCase
 
         $response->assertRedirect('/register');
         $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_users_must_select_valid_program_and_school_level_to_register(): void
+    {
+        if (! Features::enabled(Features::registration())) {
+            $this->markTestSkipped('Registration support is not enabled.');
+        }
+
+        $response = $this->from('/register')->post('/register', [
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'invalid-options@umindanao.edu.ph',
+            'phone_number' => '09123456789',
+            'course' => 'Invalid Program',
+            'year_level' => '6th Year',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+        ]);
+
+        $response->assertRedirect('/register');
+        $response->assertSessionHasErrors(['course', 'year_level']);
+        $this->assertGuest();
+    }
+
+    public function test_users_must_provide_phone_number_to_register(): void
+    {
+        if (! Features::enabled(Features::registration())) {
+            $this->markTestSkipped('Registration support is not enabled.');
+        }
+
+        $response = $this->from('/register')->post('/register', [
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'missing-phone@umindanao.edu.ph',
+            'course' => User::PROGRAMS[0],
+            'year_level' => User::SCHOOL_LEVELS[0],
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
+        ]);
+
+        $response->assertRedirect('/register');
+        $response->assertSessionHasErrors('phone_number');
         $this->assertGuest();
     }
 
@@ -81,8 +151,12 @@ class RegistrationTest extends TestCase
         }
 
         $response = $this->from('/register')->post('/register', [
-            'name' => 'Test User',
+            'first_name' => 'Test',
+            'last_name' => 'User',
             'email' => 'test2@umindanao.edu.ph',
+            'phone_number' => '09123456789',
+            'course' => User::PROGRAMS[0],
+            'year_level' => User::SCHOOL_LEVELS[0],
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);

@@ -104,8 +104,9 @@ class OwnerRentalRequestViewTest extends TestCase
         $owner = User::factory()->create();
         $borrower = User::factory()->create([
             'phone_number' => '09912345678',
-            'course' => 'BSIT',
-            'year_level' => '3',
+            'secondary_phone_number' => '09876543210',
+            'course' => 'Computing Education',
+            'year_level' => '3rd Year',
         ]);
 
         $category = Category::query()->create([
