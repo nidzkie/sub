@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Rental;
+use App\Notifications\RentalMessageSentNotification;
 use App\Notifications\RentalRequestDecisionNotification;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,8 @@ class OwnerRentalRequestView extends Component
     public Rental $rental;
 
     public bool $isOwner = false;
+
+    public string $messageText = '';
 
     public function mount(Rental $rental): void
     {
@@ -29,6 +32,38 @@ class OwnerRentalRequestView extends Component
         $isRenter = (int) $this->rental->renter_id === (int) Auth::id();
 
         abort_unless($this->isOwner || $isRenter, 403);
+    }
+
+    public function sendMessage(): void
+    {
+        abort_unless(Auth::check(), 403);
+        abort_unless($this->isOwner || (int) $this->rental->renter_id === (int) Auth::id(), 403);
+
+        $this->messageText = trim($this->messageText);
+
+        $validated = $this->validate([
+            'messageText' => ['required', 'string', 'max:40'],
+        ]);
+
+        $this->rental->messages()->create([
+            'sender_id' => Auth::id(),
+            'body' => trim($validated['messageText']),
+        ]);
+
+        $recipient = $this->isOwner
+            ? $this->rental->renter
+            : $this->rental->item->user;
+
+        $recipient->notify(new RentalMessageSentNotification(
+            rentalId: $this->rental->id,
+            itemId: $this->rental->item->id,
+            itemName: $this->rental->item->name,
+            senderName: Auth::user()->name,
+            messageBody: $validated['messageText'],
+        ));
+
+        $this->reset('messageText');
+        session()->flash('message', 'Message sent.');
     }
 
     public function grantRequest(): void
@@ -94,6 +129,10 @@ class OwnerRentalRequestView extends Component
             'daysLeft' => max(0, $daysLeft),
             'dueTomorrow' => $this->rental->status === 'active' && $daysLeft === 1,
             'isOwner' => $this->isOwner,
+            'messages' => $this->rental->messages()
+                ->with('sender')
+                ->oldest()
+                ->get(),
         ]);
     }
 }

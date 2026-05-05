@@ -89,6 +89,11 @@ class User extends Authenticatable
         return $this->hasMany(Rental::class, 'renter_id');
     }
 
+    public function sentRentalMessages(): HasMany
+    {
+        return $this->hasMany(RentalMessage::class, 'sender_id');
+    }
+
     // Helper methods
     public function getAverageRatingAttribute(): float
     {

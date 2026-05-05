@@ -99,5 +99,59 @@
                 </div>
             </div>
         </div>
+
+        <div id="messages" class="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Messages</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Owner and client conversation for this rental.</p>
+                </div>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">40 characters max</span>
+            </div>
+
+            <div class="mt-5 max-h-80 space-y-3 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950">
+                @forelse ($messages as $message)
+                    @php
+                        $isMine = (int) $message->sender_id === (int) auth()->id();
+                    @endphp
+                    <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
+                        <div class="{{ $isMine ? 'bg-blue-600 text-white' : 'bg-white text-slate-900 dark:bg-slate-800 dark:text-slate-100' }} max-w-[75%] rounded-xl px-4 py-3 shadow-sm">
+                            <div class="mb-1 flex items-center gap-2 text-xs {{ $isMine ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400' }}">
+                                <span class="font-semibold">{{ $message->sender->name }}</span>
+                                <span>{{ $message->created_at->format('M d, g:i A') }}</span>
+                            </div>
+                            <p class="break-words text-sm font-medium">{{ $message->body }}</p>
+                        </div>
+                    </div>
+                @empty
+                    <p class="py-8 text-center text-sm text-slate-500 dark:text-slate-400">No messages yet.</p>
+                @endforelse
+            </div>
+
+            <form wire:submit="sendMessage" class="mt-4">
+                <div class="flex flex-col gap-3 sm:flex-row">
+                    <div class="flex-1">
+                        <input
+                            type="text"
+                            wire:model.live="messageText"
+                            maxlength="40"
+                            placeholder="Type a message..."
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/30"
+                        >
+                        <div class="mt-2 flex items-center justify-between gap-3 text-xs">
+                            @error('messageText')
+                                <span class="font-semibold text-rose-600 dark:text-rose-400">{{ $message }}</span>
+                            @else
+                                <span class="text-slate-500 dark:text-slate-400">Saved permanently with this rental.</span>
+                            @enderror
+                            <span class="text-slate-500 dark:text-slate-400">{{ strlen($messageText) }}/40</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

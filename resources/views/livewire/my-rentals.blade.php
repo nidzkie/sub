@@ -156,6 +156,7 @@
                                 <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 dark:text-slate-300">Days Left</th>
                                 <th class="px-6 py-4 text-right text-sm font-semibold text-gray-700 dark:text-slate-300">Total Price</th>
                                 <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700 dark:text-slate-300">Status</th>
+                                <th class="px-6 py-4 text-right text-sm font-semibold text-gray-700 dark:text-slate-300">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -281,6 +282,12 @@
                                             @endif">
                                             {{ $isOnProcess ? 'On Process' : ($rental->status === 'approved' ? 'Approved Request' : ucfirst($rental->status)) }}
                                         </span>
+                                    </td>
+
+                                    <td class="px-6 py-4 text-right">
+                                        <a href="{{ route('rental-requests.show', $rental) }}" class="inline-flex items-center rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700">
+                                            View Details
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
