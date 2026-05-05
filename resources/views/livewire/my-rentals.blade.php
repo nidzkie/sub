@@ -174,8 +174,8 @@
                                     <!-- Item Name -->
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            @if($rental->item->image_path)
-                                                <img class="w-12 h-12 rounded-lg object-cover" src="{{ asset('storage/' . $rental->item->image_path) }}" alt="{{ $rental->item->name }}">
+                                            @if($rental->item->imageUrl())
+                                                <img class="w-12 h-12 rounded-lg object-cover" src="{{ $rental->item->imageUrl() }}" alt="{{ $rental->item->name }}">
                                             @else
                                                 <div class="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
                                                     <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

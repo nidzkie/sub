@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,6 +20,25 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+    public const array PROGRAMS = [
+        'Accounting Education',
+        'Criminal Justice Education',
+        'Computing Education',
+        'Teacher Education',
+        'Engineering Education',
+        'Arts and Sciences Education',
+        'Business Administration Education',
+        'Graduate School',
+    ];
+
+    public const array SCHOOL_LEVELS = [
+        '1st Year',
+        '2nd Year',
+        '3rd Year',
+        '4th Year',
+        '5th Year',
+    ];
+
     protected $fillable = [
         'name',
         'first_name',
@@ -27,9 +47,9 @@ class User extends Authenticatable
         'password',
         'student_id',
         'phone_number',
+        'secondary_phone_number',
         'course',
         'year_level',
-        'campus',
         'department',
         'bio',
         'rating',
@@ -83,6 +103,15 @@ class User extends Authenticatable
     public function isAdministrator(): bool
     {
         return (bool) $this->is_admin;
+    }
+
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        if ($this->profile_photo_path && Storage::disk($this->profilePhotoDisk())->exists($this->profile_photo_path)) {
+            return '/storage/'.ltrim(str_replace('\\', '/', $this->profile_photo_path), '/');
+        }
+
+        return $this->defaultProfilePhotoUrl();
     }
 
     protected function rating(): Attribute

@@ -73,9 +73,10 @@
                     <div class="mt-4 space-y-3 text-sm">
                         <p><span class="font-semibold text-slate-700">Name:</span> <span class="text-slate-900">{{ $rental->renter->name }}</span></p>
                         <p><span class="font-semibold text-slate-700">Email:</span> <span class="text-slate-900">{{ $rental->renter->email }}</span></p>
-                        <p><span class="font-semibold text-slate-700">Phone:</span> <span class="text-slate-900">{{ $rental->renter->phone_number ?: 'Not provided' }}</span></p>
-                        <p><span class="font-semibold text-slate-700">Course:</span> <span class="text-slate-900">{{ $rental->renter->course ?: 'Not provided' }}</span></p>
-                        <p><span class="font-semibold text-slate-700">Year Level:</span> <span class="text-slate-900">{{ $rental->renter->year_level ?: 'Not provided' }}</span></p>
+                        <p><span class="font-semibold text-slate-700">Phone 1:</span> <span class="text-slate-900">{{ $rental->renter->phone_number ?: 'Not provided' }}</span></p>
+                        <p><span class="font-semibold text-slate-700">Phone 2:</span> <span class="text-slate-900">{{ $rental->renter->secondary_phone_number ?: 'Not provided' }}</span></p>
+                        <p><span class="font-semibold text-slate-700">Program:</span> <span class="text-slate-900">{{ $rental->renter->course ?: 'Not provided' }}</span></p>
+                        <p><span class="font-semibold text-slate-700">School Level:</span> <span class="text-slate-900">{{ $rental->renter->year_level ?: 'Not provided' }}</span></p>
                     </div>
                 </div>
 

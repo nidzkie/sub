@@ -118,25 +118,23 @@
                     </div>
                 </aside>
 
-                <div class="space-y-6">
-
-
-                    <div id="profile" class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/85 shadow-lg shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/85 dark:shadow-slate-900/40">
+                <div class="min-w-0 space-y-8">
+                    <div id="profile" class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/95 shadow-lg shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/85 dark:shadow-slate-900/40">
                         <div class="border-b border-slate-200/70 px-6 py-4 dark:border-slate-700/70">
                             <h2 class="text-lg font-bold text-slate-900 dark:text-slate-50">Profile Information</h2>
-                            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Update your account's profile information and email address.</p>
+                            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Manage your photo, contact number, program, and school level.</p>
                         </div>
                         <div class="p-6">
                             @livewire('profile.update-profile-information-form')
                         </div>
                     </div>
 
-                    <div id="security" class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/85 shadow-lg shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/85 dark:shadow-slate-900/40">
+                    <div id="security" class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white/95 shadow-lg shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-900/85 dark:shadow-slate-900/40">
                         <div class="border-b border-slate-200/70 px-6 py-4 dark:border-slate-700/70">
                             <h2 class="text-lg font-bold text-slate-900 dark:text-slate-50">Security</h2>
                             <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Ensure your account is using a long, random password to stay secure.</p>
                         </div>
-                        <div class="p-6">
+                        <div class="max-w-2xl p-6">
                             @livewire('profile.update-password-form')
                         </div>
                     </div>
@@ -146,7 +144,7 @@
                             <h2 class="text-lg font-bold text-red-600 dark:text-red-400">Delete Account</h2>
                             <p class="mt-1 text-sm text-red-600/70 dark:text-red-400/70">Permanently delete your account and all data.</p>
                         </div>
-                        <div class="p-6">
+                        <div class="max-w-3xl p-6">
                             <div class="mb-4 text-sm text-red-700 dark:text-red-300">
                                 Once your account is deleted, all of its resources and data will be permanently deleted. Please download any data or information that you wish to retain before proceeding.
                             </div>
